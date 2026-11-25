@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/icons/apple-touch-icon-152.png">
+<link rel="apple-touch-icon" sizes="167x167" href="/icons/apple-touch-icon-167.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
+<meta name="apple-mobile-web-app-title" content="Editor Folder">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" id="themeColorMeta" content="#F6F1E7">
+<title>Editor Folder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;750;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --app-font:'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; }
+  *{ font-family:var(--app-font); }
+  body.font-serif * { font-family: Georgia, 'Times New Roman', Times, serif !important; }
+  body.font-mono * { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important; }
+  body.font-rounded * { font-family: ui-rounded, 'SF Pro Rounded', 'Baloo 2', 'Segoe UI', sans-serif !important; }
+  body.font-klasik * { font-family: 'Times New Roman', Times, Georgia, serif !important; }
+  body.font-humanis * { font-family: Verdana, Tahoma, Geneva, sans-serif !important; }
+  body.font-kompak * { font-family: 'Arial Narrow', 'Segoe UI', Arial, sans-serif !important; }
+  body.font-custom * { font-family: 'BMCustom', 'Inter', sans-serif !important; }
+  body.font-bold-mode * { font-weight: 700 !important; }
+
+  :root{
+    --paper:#F6F1E7;
+    --paper-alt:#FBF8F2;
+    --ink:#1C1B19;
+    --ink-soft:#6B6459;
+    --line:#E4DDCC;
+    --line-soft:#EDE7D8;
+    --glass-bg:rgba(255,255,255,0.6);
+    --glass-border:rgba(255,255,255,0.7);
+    --glass-shadow:0 8px 32px rgba(80,70,50,0.14);
+    --accent:#F0A529;
+    --accent-rgb:240, 165, 41;
+    --accent-ink:#6C4A12;
+    --accent-ink-rgb:108, 74, 18;
+    --on-accent:#1C1B19;
+    --accent-soft:rgba(var(--accent-rgb),0.14);
+    --danger:#C24444;
+    --danger-soft:rgba(194,68,68,0.12);
+    --radius-pill:999px;
+    --radius-lg:22px;
+    --radius-md:16px;
+    --safe-top:env(safe-area-inset-top,0px);
+    --safe-bottom:env(safe-area-inset-bottom,0px);
+    --safe-left:env(safe-area-inset-left,0px);
+    --safe-right:env(safe-area-inset-right,0px);
+    --skeleton-a:rgba(0,0,0,0.06);
+    --skeleton-b:rgba(0,0,0,0.12);
+
+    --fab-size:44px;
+    --fab-lift:14px;
+    --fab-icon-size:18px;
+  }
+
+  body.surface-dark{
+    --paper:#15140F;
+    --paper-alt:#1B1A15;
+    --ink:#EDEAE2;
+    --ink-soft:#9B948A;
+    --line:#332F27;
+    --line-soft:#26241D;
+    --glass-bg:rgba(30,28,23,0.6);
+    --glass-border:rgba(255,255,255,0.09);
+    --glass-shadow:0 8px 32px rgba(0,0,0,0.45);
+    --accent-soft:rgba(var(--accent-rgb),0.18);
+    --danger-soft:rgba(194,68,68,0.18);
+    --skeleton-a:rgba(255,255,255,0.06);
+    --skeleton-b:rgba(255,255,255,0.13);
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  ::selection{ background:rgba(var(--accent-rgb),0.35); color:inherit; }
+  button{ font:inherit; }
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    overscroll-behavior:none;
+    transition:background .2s ease, color .2s ease;
+  }
+  input,select,textarea{ font:inherit; color:inherit; }
+  button, .tap{ transition:transform .1s ease, background .1s ease, opacity .1s ease; }
+  button:active, .tap:active{ transform:scale(0.96); }
+
+  .app{ position:fixed; inset:0; display:flex; flex-direction:column; }
+
+  .topbar{
+    display:flex; align-items:center; gap:10px;
+    padding:calc(var(--safe-top) + 12px) calc(var(--safe-left) + 16px) 12px calc(var(--safe-left) + 16px);
+    flex-shrink:0;
+  }
+  .icon-btn{
+    width:40px; height:40px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    border:none; background:var(--glass-bg); border:1px solid var(--glass-border);
+    backdrop-filter:blur(20px) saturate(1.3); -webkit-backdrop-filter:blur(20px) saturate(1.3);
+    border-radius:50%; color:var(--ink); cursor:pointer;
+  }
+  .icon-btn svg{ width:18px; height:18px; }
+  .topbar-titles{ display:flex; flex-direction:column; min-width:0; flex:1; }
+  .topbar-titles h2{ margin:0; font-size:17px; font-weight:750; letter-spacing:-0.01em; }
+  .topbar-titles span{ font-size:12.5px; color:var(--ink-soft); font-weight:500; }
+  .topbar-action{
+    flex-shrink:0; padding:9px 16px; border-radius:var(--radius-pill); border:1.5px solid var(--line);
+    background:var(--paper-alt); color:var(--ink); font-size:13.5px; font-weight:750; cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+  }
+  .topbar-action svg{ width:15px; height:15px; }
+
+  .scroll{ flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:calc(96px + var(--safe-bottom)); }
+  .scroll.no-nav{ padding-bottom:calc(28px + var(--safe-bottom)); }
+  .px{ padding-left:calc(var(--safe-left) + 18px); padding-right:calc(var(--safe-right) + 18px); }
+
+  .view{ display:none; flex-direction:column; height:100%; }
+  .view.active{ display:flex; }
+
+  .greet-card{
+    margin-top:16px; padding:18px 20px; border-radius:var(--radius-lg);
+    background:
+      linear-gradient(135deg, rgba(196,143,31,0.55) 0%, rgba(90,62,15,0.68) 100%),
+      url('background-admin.jpg') center/cover no-repeat, var(--accent);
+    color:#fff; box-shadow:0 10px 26px rgba(180,130,30,0.28);
+  }
+  .greet-card p{ margin:0 0 4px 0; font-size:13px; opacity:0.85; font-weight:600; }
+  .greet-card h3{ margin:0 0 4px 0; font-size:20px; font-weight:800; }
+  .greet-card span{ font-size:12.5px; opacity:0.8; }
+  .stat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px; }
+  .stat-card{
+    padding:14px 16px; border-radius:var(--radius-md);
+    background:rgba(255,255,255,0.28); border:1px solid rgba(255,255,255,0.45);
+    backdrop-filter:blur(24px) saturate(1.6); -webkit-backdrop-filter:blur(24px) saturate(1.6);
+    box-shadow:0 6px 18px rgba(80,70,50,0.08), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  body.surface-dark .stat-card{
+    background:rgba(30,28,23,0.32); border-color:rgba(255,255,255,0.08);
+    box-shadow:0 6px 18px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  .stat-card .stat-label{ font-size:12px; color:var(--ink-soft); font-weight:600; }
+  .stat-card .stat-value{ font-size:24px; font-weight:800; margin-top:4px; letter-spacing:-0.01em; }
+  .stat-card .stat-value.money{ font-size:18px; }
+  .section-label{ margin:22px 0 10px 0; font-size:13px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.04em; }
+  .menu-card{
+    display:flex; align-items:center; gap:14px; padding:14px 16px; margin-bottom:10px;
+    border-radius:var(--radius-md); background:var(--paper-alt); border:1px solid var(--line-soft);
+    cursor:pointer;
+  }
+  .menu-card .menu-ico{
+    width:42px; height:42px; border-radius:13px; background:var(--accent-soft); color:var(--accent-ink);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  body.surface-dark .menu-card .menu-ico{ color:var(--accent); }
+  .menu-card .menu-ico svg{ width:20px; height:20px; }
+  .menu-card .menu-text b{ display:block; font-size:15px; font-weight:700; }
+  .menu-card .menu-text span{ font-size:12.5px; color:var(--ink-soft); }
+  .menu-card .chev{ margin-left:auto; color:var(--ink-soft); flex-shrink:0; }
+  .menu-card .chev svg{ width:16px; height:16px; }
+
+  .recent-row{
+    display:flex; align-items:center; gap:12px; padding:12px 14px; margin-bottom:8px;
+    border-radius:14px; background:var(--paper-alt); border:1px solid var(--line-soft); cursor:pointer;
+  }
+  .recent-row .r-no{
+    width:30px; height:30px; border-radius:10px; background:var(--accent-soft); color:var(--accent-ink);
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; flex-shrink:0;
+  }
+  body.surface-dark .recent-row .r-no{ color:var(--accent); }
+  .recent-row .r-mid{ flex:1; min-width:0; }
+  .recent-row .r-mid b{ display:block; font-size:14px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .recent-row .r-mid span{ font-size:11.5px; color:var(--ink-soft); font-weight:500; }
+  .recent-row .r-right{ text-align:right; flex-shrink:0; font-size:13px; font-weight:800; color:var(--accent-ink); }
+  body.surface-dark .recent-row .r-right{ color:var(--accent); }
+
+  .recent-row .r-right .r-sub{ font-size:10.5px; font-weight:600; color:var(--ink-soft); margin-top:1px; }
+  .detail-row .auto-tag-inline{ font-size:10px; font-weight:700; color:var(--accent-ink); background:var(--accent-soft); padding:1px 7px; border-radius:var(--radius-pill); margin-left:6px; }
+  body.surface-dark .detail-row .auto-tag-inline{ color:var(--accent); }
+  .field .readonly-box.warn span:first-child, .detail-row .val.warn{ color:#C24444; }
+  .detail-row .val.ok, .field .readonly-box.ok span:first-child{ color:#3E9B5F; }
+  .recent-row .r-right.pending{ color:var(--ink-soft); font-weight:600; font-style:italic; font-size:11.5px; }
+
+  .bottom-nav{
+    position:fixed; left:0; right:0; bottom:0; z-index:60;
+    display:flex; flex-direction:column;
+  }
+  .bottom-nav-surface{
+    position:relative; height:64px;
+    display:flex; align-items:center;
+    padding:0 calc(var(--safe-left) + 10px) 0 calc(var(--safe-right) + 10px);
+  }
+  .bottom-nav-bg{
+    position:absolute; inset:0; z-index:0;
+    background:var(--glass-bg);
+    backdrop-filter:blur(24px) saturate(1.4); -webkit-backdrop-filter:blur(24px) saturate(1.4);
+    clip-path:url(#navNotchClip);
+    box-shadow:0 -2px 14px rgba(30,25,15,0.06);
+  }
+  .bottom-nav-safe{
+    height:var(--safe-bottom);
+    background:var(--glass-bg);
+    backdrop-filter:blur(24px) saturate(1.4); -webkit-backdrop-filter:blur(24px) saturate(1.4);
+  }
+  .nav-item{
+    position:relative; z-index:1;
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 0;
+    border:none; background:none; color:var(--ink-soft); cursor:pointer;
+  }
+  .nav-item svg{ width:21px; height:21px; }
+  .nav-item span{ font-size:11px; font-weight:600; }
+  .nav-item.active{ color:var(--accent); }
+
+  .nav-item-add{ gap:6px; justify-content:flex-end; }
+  .nav-add-fab{
+    width:var(--fab-size); height:var(--fab-size); border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--accent); color:#fff;
+    transform:translateY(calc(-1 * var(--fab-lift)));
+    transition:transform .15s ease, background .15s ease;
+  }
+  .nav-add-fab svg{ width:var(--fab-icon-size); height:var(--fab-icon-size); }
+  .nav-item-add span{
+    font-size:10px; font-weight:750; letter-spacing:0.03em; color:var(--ink-soft);
+    margin-top:calc(-1 * var(--fab-lift) + 4px);
+  }
+  .nav-item-add.active .nav-add-fab, .nav-item-add:active .nav-add-fab{
+    background:var(--accent-ink); transform:translateY(calc(-1 * var(--fab-lift))) scale(0.94);
+  }
+
+  .field{ margin-bottom:16px; }
+  .field label{ display:block; font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-bottom:6px; }
+  .field label .opt-tag{ font-weight:600; text-transform:none; letter-spacing:0; color:var(--ink-soft); opacity:0.75; }
+  .field .readonly-box{
+    padding:13px 14px; border-radius:14px; background:var(--line-soft); color:var(--ink-soft);
+    font-size:15px; font-weight:600; display:flex; align-items:center; justify-content:space-between;
+  }
+  .field .readonly-box .auto-tag{ font-size:10.5px; font-weight:700; color:var(--accent-ink); background:var(--accent-soft); padding:2px 8px; border-radius:var(--radius-pill); }
+  body.surface-dark .field .readonly-box .auto-tag{ color:var(--accent); }
+  .field input, .field select, .field textarea{
+    width:100%; padding:13px 14px; border-radius:14px; border:1.5px solid var(--line);
+    background:var(--paper-alt); color:var(--ink); font-size:15px; font-weight:600; outline:none;
+    resize:vertical;
+  }
+  .field textarea{ min-height:70px; font-weight:500; }
+  .field input:focus, .field select:focus, .field textarea:focus{ border-color:var(--accent); }
+  .field .price-input-wrap{ position:relative; }
+  .field .price-prefix{ position:absolute; left:14px; top:50%; transform:translateY(-50%); font-weight:700; color:var(--ink-soft); }
+  .field .price-input-wrap input{ padding-left:38px; }
+
+  .suggest-wrap{ position:relative; }
+  .suggest-list{
+    display:none; position:absolute; left:0; right:0; top:calc(100% + 6px); z-index:20;
+    max-height:190px; overflow-y:auto; border-radius:14px; border:1.5px solid var(--line);
+    background:var(--paper-alt); box-shadow:0 12px 28px rgba(30,25,15,0.18);
+    -webkit-overflow-scrolling:touch;
+  }
+  .suggest-list.open{ display:block; }
+  .suggest-item{
+    padding:11px 14px; font-size:14.5px; font-weight:600; color:var(--ink); cursor:pointer;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .suggest-item:last-child{ border-bottom:none; }
+  .suggest-item:active{ background:var(--accent-soft); }
+  .detail-row .suggest-list{ border-radius:11px; }
+  .hint-card{
+    display:flex; gap:10px; align-items:flex-start; padding:13px 14px; border-radius:14px;
+    background:var(--accent-soft); color:var(--accent-ink); font-size:12.5px; font-weight:600; line-height:1.4; margin-bottom:18px;
+  }
+  body.surface-dark .hint-card{ color:var(--ink); }
+  .hint-card svg{ width:18px; height:18px; flex-shrink:0; margin-top:1px; }
+
+  .btn-primary{
+    width:100%; padding:15px; border:none; border-radius:16px; background:var(--accent); color:#fff;
+    font-size:15.5px; font-weight:750; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+    box-shadow:0 8px 20px rgba(180,130,30,0.28);
+  }
+  .btn-primary svg{ width:18px; height:18px; }
+  .btn-primary:disabled{ opacity:0.55; box-shadow:none; }
+  .btn-secondary{
+    width:100%; padding:15px; border:1.5px solid var(--line); border-radius:16px; background:transparent; color:var(--ink);
+    font-size:15.5px; font-weight:700; cursor:pointer;
+  }
+  .btn-danger-outline{
+    padding:13px; border:1.5px solid var(--danger); border-radius:14px; background:var(--danger-soft); color:var(--danger);
+    font-size:14.5px; font-weight:750; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;
+  }
+  .btn-danger-outline svg{ width:16px; height:16px; }
+  .trash-item{ margin-bottom:14px; }
+  .trash-actions{ display:flex; gap:10px; margin-top:8px; }
+  .trash-actions .btn-secondary, .trash-actions .btn-danger-outline{ flex:1; padding:10px 8px; font-size:13px; }
+  .btn-danger-outline:disabled{ opacity:0.4; filter:grayscale(0.4); pointer-events:none; }
+
+  .pz-wrap{
+    position:relative; width:100%; height:130px; border-radius:14px; overflow:hidden;
+    background:var(--paper-alt); margin-bottom:12px; user-select:none; -webkit-user-select:none;
+  }
+  .pz-wrap canvas{ display:block; }
+  #pzPiece{
+    position:absolute; left:0; top:0; will-change:transform;
+    filter:drop-shadow(0 2px 5px rgba(0,0,0,0.4)); pointer-events:none;
+  }
+  .pz-refresh{
+    position:absolute; top:6px; right:6px; width:30px; height:30px; padding:0; border-radius:50%;
+    border:1px solid rgba(255,255,255,0.5); background:rgba(0,0,0,0.28); color:#fff; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+  }
+  .pz-refresh svg{ width:15px; height:15px; }
+  .pz-wrap.fail{ animation:pzShake .4s ease; }
+  @keyframes pzShake{
+    0%,100%{ transform:translateX(0); } 20%{ transform:translateX(-8px); } 40%{ transform:translateX(8px); }
+    60%{ transform:translateX(-5px); } 80%{ transform:translateX(5px); }
+  }
+  .pz-track{
+    position:relative; height:46px; border-radius:23px; border:1.5px solid var(--line);
+    background:var(--paper-alt); overflow:hidden; user-select:none; -webkit-user-select:none;
+  }
+  .pz-fill{ position:absolute; left:0; top:0; bottom:0; width:0; background:var(--accent-soft); }
+  .pz-label{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:650; color:var(--ink-soft); pointer-events:none; padding-left:30px;
+  }
+  .pz-handle{
+    position:absolute; left:2px; top:2px; width:39px; height:39px; border-radius:50%; border:none; padding:0;
+    background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center;
+    cursor:grab; touch-action:none; box-shadow:0 3px 10px rgba(80,60,20,0.35); will-change:transform; transition:none;
+  }
+  .pz-handle svg{ width:18px; height:18px; }
+  .pz-handle:active{ transform:none; }
+  .pz-anim .pz-handle, .pz-anim #pzPiece, .pz-anim .pz-fill{ transition:transform .22s ease, width .22s ease; }
+  .pz-track.ok{ border-color:#3E9B5F; }
+  .pz-track.ok .pz-fill{ background:rgba(62,155,95,0.22); }
+  .pz-track.ok .pz-handle{ background:#3E9B5F; }
+  .pz-track.ok .pz-label{ color:#3E9B5F; }
+  .btn-row{ display:flex; gap:10px; }
+  .btn-row > *{ flex:1; }
+
+  .detail-card{
+    border-radius:var(--radius-lg); background:var(--paper-alt); border:1px solid var(--line-soft);
+    padding:6px 16px; margin-top:6px;
+  }
+  .detail-row{ padding:13px 0; border-bottom:1px solid var(--line-soft); }
+  .detail-row:last-child{ border-bottom:none; }
+  .detail-row label{ display:block; font-size:11.5px; font-weight:700; color:var(--ink-soft); margin-bottom:3px; text-transform:uppercase; letter-spacing:0.03em; }
+  .detail-row .val{ font-size:15px; font-weight:700; white-space:pre-wrap; }
+  .detail-row .val.empty{ color:var(--ink-soft); font-weight:600; font-style:italic; }
+  .detail-row input, .detail-row textarea{
+    width:100%; padding:10px 12px; border-radius:11px; border:1.5px solid var(--line);
+    background:var(--paper); font-size:15px; font-weight:700; outline:none; color:var(--ink);
+  }
+  .detail-row textarea{ font-weight:500; min-height:64px; resize:vertical; }
+  .detail-row input:focus, .detail-row textarea:focus{ border-color:var(--accent); }
+  .detail-actions{ margin-top:18px; display:flex; flex-direction:column; gap:10px; }
+
+  .theme-opt{
+    display:flex; align-items:center; justify-content:space-between; padding:14px 16px; margin-bottom:10px;
+    border-radius:14px; background:var(--paper-alt); border:1.5px solid var(--line-soft); cursor:pointer;
+  }
+  .theme-opt.active{ border-color:var(--accent); background:var(--accent-soft); }
+  .theme-opt b{ font-size:14.5px; font-weight:700; }
+  .theme-opt .dot{ width:20px; height:20px; border-radius:50%; border:2px solid var(--line); flex-shrink:0; }
+  .theme-opt.active .dot{ border-color:var(--accent); background:var(--accent); box-shadow:inset 0 0 0 3px var(--paper-alt); }
+
+  .overlay{
+    position:fixed; inset:0; background:rgba(15,13,8,0.32); z-index:200;
+    display:flex; align-items:flex-end; justify-content:center; opacity:0; pointer-events:none; transition:opacity .18s ease;
+  }
+  .overlay.center{ align-items:center; padding:0 20px; }
+  .overlay.show{ opacity:1; pointer-events:auto; }
+  .overlay.show{ -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); }
+  .modal-card{
+    width:100%; max-width:420px; background:var(--paper); border-radius:24px 24px 0 0;
+    padding:22px 20px calc(var(--safe-bottom) + 20px) 20px; transform:translateY(24px); transition:transform .2s ease;
+    max-height:85vh; overflow-y:auto;
+  }
+  .overlay.center .modal-card{ border-radius:22px; padding:24px 20px calc(var(--safe-bottom) + 20px) 20px; }
+  .overlay.show .modal-card{ transform:translateY(0); }
+  .modal-icon{
+    width:54px; height:54px; border-radius:50%; background:var(--accent-soft); color:var(--accent-ink);
+    display:flex; align-items:center; justify-content:center; margin:0 auto 14px auto;
+  }
+  body.surface-dark .modal-icon{ color:var(--accent); }
+  .modal-icon svg{ width:26px; height:26px; }
+  .modal-icon.danger{ background:var(--danger-soft); color:var(--danger); }
+  .modal-card h3{ margin:0 0 6px 0; font-size:18px; font-weight:800; text-align:center; }
+  .modal-card p.desc{ margin:0 0 16px 0; font-size:13.5px; color:var(--ink-soft); text-align:center; line-height:1.5; }
+  .preview-box{ background:var(--paper-alt); border-radius:16px; padding:4px 14px; margin-bottom:18px; }
+  .preview-row{ display:flex; justify-content:space-between; gap:12px; padding:9px 0; border-bottom:1px solid var(--line-soft); font-size:13.5px; }
+  .preview-row:last-child{ border-bottom:none; }
+  .preview-row span:first-child{ color:var(--ink-soft); font-weight:600; flex-shrink:0; }
+  .preview-row span:last-child{ font-weight:750; text-align:right; }
+  .preview-row span.empty-val{ color:var(--ink-soft); font-weight:600; font-style:italic; }
+
+  #saveStatusIndicator{
+    position:fixed; top:calc(var(--safe-top) + 10px); right:14px; z-index:500;
+    font-size:11.5px; font-weight:700; padding:5px 12px; border-radius:var(--radius-pill);
+    background:rgba(0,0,0,0.6); color:#fff; opacity:0; transition:opacity .25s ease; pointer-events:none;
+  }
+  #migrationToast{
+    position:fixed; left:16px; right:16px; bottom:calc(var(--safe-bottom) + 18px); z-index:300;
+    background:var(--ink); color:var(--paper); padding:13px 16px; border-radius:16px; font-size:12.5px; font-weight:600;
+    line-height:1.5; opacity:0; transform:translateY(10px); transition:opacity .25s ease, transform .25s ease; pointer-events:none;
+  }
+  #migrationToast.show{ opacity:1; transform:translateY(0); pointer-events:auto; }
+
+  input, textarea, select, button{ touch-action: manipulation; }
+
+  .field input[type="date"], .field input[type="time"]{ min-height:48px; }
+  .detail-row select, .detail-row input[type="date"], .detail-row input[type="time"]{
+    width:100%; padding:10px 12px; border-radius:11px; border:1.5px solid var(--line);
+    background:var(--paper); font-size:15px; font-weight:700; outline:none; color:var(--ink);
+  }
+  .detail-row select:focus{ border-color:var(--accent); }
+  .detail-row .price-input-wrap{ position:relative; }
+  .detail-row .price-prefix{ position:absolute; left:12px; top:50%; transform:translateY(-50%); font-weight:700; color:var(--ink-soft); }
+  .detail-row .price-input-wrap input{ padding-left:36px; }
+  .recent-row .r-right.pending{ color:#C28A2E; }
+
+  .bukti-dropzone{
+    border:1.5px dashed var(--line); border-radius:var(--radius-md); background:var(--paper-alt);
+    padding:14px; transition:border-color .15s ease, background .15s ease;
+  }
+  .bukti-dropzone.dragover{ border-color:var(--accent); background:var(--accent-soft); }
+  .bukti-dropzone.full .bukti-empty-state{ display:none; }
+  .bukti-empty-state{ display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center; padding:10px 0; color:var(--ink-soft); }
+  .bukti-empty-state svg{ width:26px; height:26px; opacity:0.6; }
+  .bukti-empty-state span{ font-size:12px; font-weight:600; }
+  .bukti-btn-row{ display:flex; gap:8px; margin-top:2px; }
+  .bukti-pick-btn{
+    padding:8px 14px; border-radius:var(--radius-pill); border:1.5px solid var(--line); background:var(--paper);
+    color:var(--ink); font-size:12.5px; font-weight:700; cursor:pointer;
+  }
+  .bukti-pick-btn:active{ background:var(--accent-soft); border-color:var(--accent); }
+  .bukti-thumbs{ display:flex; gap:10px; flex-wrap:wrap; }
+  .bukti-dropzone.has-items .bukti-thumbs{ margin-top:10px; }
+  .bukti-thumb{ position:relative; width:72px; height:72px; border-radius:12px; overflow:hidden; background:var(--line-soft); flex-shrink:0; cursor:pointer; }
+  .bukti-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .bukti-thumb-remove{
+    position:absolute; top:3px; right:3px; width:20px; height:20px; border-radius:50%; border:none;
+    background:rgba(20,16,8,0.65); color:#fff; font-size:13px; line-height:1; display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .bukti-thumb-spinner{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(20,16,8,0.35); }
+  .bukti-thumb-spinner::after{
+    content:''; width:18px; height:18px; border-radius:50%; border:2.5px solid rgba(255,255,255,0.4); border-top-color:#fff;
+    animation:bukti-spin .7s linear infinite;
+  }
+  @keyframes bukti-spin{ to{ transform:rotate(360deg); } }
+  .bukti-thumb.error{ outline:2px solid var(--danger); outline-offset:-2px; }
+  .bukti-thumb-error{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(194,68,68,0.55);
+    color:#fff; font-weight:800; font-size:16px;
+  }
+  .bukti-view-thumbs{ display:flex; gap:8px; flex-wrap:wrap; margin-top:2px; }
+  .bukti-view-thumb{ width:56px; height:56px; border-radius:10px; object-fit:cover; cursor:pointer; }
+  .r-photo-badge{ font-size:12px; margin-right:2px; vertical-align:-1px; }
+
+  .bukti-viewer-overlay{
+    position:fixed; inset:0; background:rgba(10,8,4,0.92); z-index:300;
+    display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .2s ease;
+  }
+  .bukti-viewer-overlay.show{ opacity:1; pointer-events:auto; }
+  .bukti-viewer-stage{ position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center; touch-action:pan-y; }
+  .bukti-viewer-stage img{ max-width:92%; max-height:80vh; border-radius:14px; object-fit:contain; user-select:none; -webkit-user-drag:none; }
+  .bukti-viewer-close{
+    position:absolute; top:calc(var(--safe-top) + 14px); right:18px; width:38px; height:38px; border-radius:50%;
+    background:rgba(255,255,255,0.14); border:none; color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:2;
+  }
+  .bukti-viewer-nav{
+    position:absolute; top:50%; transform:translateY(-50%); width:40px; height:40px; border-radius:50%;
+    background:rgba(255,255,255,0.14); border:none; color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:2;
+  }
+  .bukti-viewer-nav.prev{ left:12px; }
+  .bukti-viewer-nav.next{ right:12px; }
+  .bukti-viewer-dots{ position:absolute; bottom:calc(var(--safe-bottom) + 20px); left:0; right:0; display:flex; justify-content:center; gap:6px; z-index:2; }
+  .bukti-dot{ width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.4); transition:all .15s ease; }
+  .bukti-dot.active{ background:#fff; width:16px; border-radius:3px; }
+
+  .scroll { transition: opacity 0.25s ease; }
+  html.is-loading .scroll { opacity: 0; }
+  @media (prefers-reduced-motion: reduce) { .scroll { transition: none; } }
+
+  @media screen and (min-width: 768px) {
+    .topbar,
+    .px {
+      padding-left: max(calc(var(--safe-left) + 24px), calc((100% - 900px) / 2));
+      padding-right: max(calc(var(--safe-right) + 24px), calc((100% - 900px) / 2));
+    }
+    .stat-grid { grid-template-columns: repeat(4, 1fr); }
+    .bottom-nav { max-width: 560px; margin-left: auto; margin-right: auto; }
+  }
+</style>
+<script>
+  document.documentElement.classList.add('is-loading');
+  setTimeout(function () { document.documentElement.classList.remove('is-loading'); }, 6000);
+</script>
+<script src="/bm-mock.js"></script>
+<script src="/bm-app.js"></script>
+<script src="/bm-dialog.js"></script>
+<script>
+  const SUPABASE_URL = 'https://uji-coba.invalid';
+  const SUPABASE_ANON_KEY = 'uji-coba-tanpa-kunci';
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      storage: window.localStorage,
+      storageKey: 'bmtech-auth'
+    }
+  });
+</script>
+<script>
+  (async function guardAdminAccess() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+
+    if (!session) {
+      window.top.location.href = 'admin-login.html';
+      return;
+    }
+
+    const { data: isAdmin, error } = await supabaseClient.rpc('is_admin');
+
+    if (error) {
+      console.error('Gagal cek status admin (jaringan?):', error.message);
+      return;
+    }
+
+    if (!isAdmin) {
+      await supabaseClient.auth.signOut();
+      window.top.location.href = 'admin-login.html';
+    }
+  })();
+</script>
+<script>
+  window.addEventListener('error', function (e) {
+    console.error('Unhandled error:', e.error || e.message);
+    alert('Terjadi error tak terduga: ' + (e.message || 'unknown error'));
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    console.error('Unhandled promise rejection:', e.reason);
+    alert('Terjadi error tak terduga (async): ' + (e.reason && e.reason.message ? e.reason.message : e.reason));
+  });
+</script>
+<script src="/bm-theme.js"></script>
+<script src="/bm-lang.js"></script>
+</head>
+<body>
+<script>
+  (function () {
+    var FONT_CLASS = { serif:'font-serif', klasik:'font-klasik', humanis:'font-humanis', kompak:'font-kompak', mono:'font-mono', rounded:'font-rounded', custom:'font-custom' };
+    function ls(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+
+    function applyAccent() {
+      var B = window.BMTheme, hex;
+      if (!B || !B.getAccent) return;
+      try { hex = B.getAccent(); } catch (e) { return; }
+      if (!/^#[0-9a-f]{6}$/i.test(hex || '')) return;
+      var r = parseInt(hex.substr(1, 2), 16), g = parseInt(hex.substr(3, 2), 16), b = parseInt(hex.substr(5, 2), 16);
+      var ir = Math.round(r * 0.45), ig = Math.round(g * 0.45), ib = Math.round(b * 0.45);
+      var st = document.documentElement.style;
+      st.setProperty('--accent', hex);
+      st.setProperty('--accent-rgb', r + ', ' + g + ', ' + b);
+      st.setProperty('--accent-ink', 'rgb(' + ir + ', ' + ig + ', ' + ib + ')');
+      st.setProperty('--accent-ink-rgb', ir + ', ' + ig + ', ' + ib);
+      var dark = '#1C1B19';
+      var onA = (B.contrast && B.contrast(hex, dark) < B.contrast(hex, '#FFFFFF')) ? '#FFFFFF' : dark;
+      st.setProperty('--on-accent', onA);
+    }
+
+    function applyAppearance() {
+      var cl = document.body.classList;
+      var isDark = ls('bm-theme') !== 'light';
+      cl.toggle('surface-dark', isDark);
+      var meta = document.getElementById('themeColorMeta');
+      if (meta) meta.setAttribute('content', isDark ? '#15140F' : '#F6F1E7');
+
+      Object.keys(FONT_CLASS).forEach(function (k) { cl.remove(FONT_CLASS[k]); });
+      var f = ls('bm-font');
+      if (f && FONT_CLASS[f]) cl.add(FONT_CLASS[f]);
+      cl.toggle('font-bold-mode', ls('bm-font-bold') === 'on');
+
+      applyAccent();
+      if (f === 'custom' && window.BMTheme && window.BMTheme.ensureCustom) {
+        try { window.BMTheme.ensureCustom(); } catch (e) {}
+      }
+    }
+
+    window.bmApplyAppearance = applyAppearance;
+    applyAppearance();
+    window.addEventListener('storage', function (e) { if (!e.key || e.key.indexOf('bm-') === 0) applyAppearance(); });
+    window.addEventListener('pageshow', applyAppearance);
+  })();
+</script>
+<div class="app">
+  
+  <section class="view active" id="view-home">
+    <div class="topbar">
+      <button class="icon-btn" id="btnHomeBack" aria-label="Kembali ke daftar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    </div>
+    <div class="scroll px">
+      <div class="greet-card">
+        <p>Selamat datang,</p>
+        <h3 id="gName">...</h3>
+        <span id="gSub">Catat data dengan mudah dan cepat.</span>
+      </div>
+
+      <div class="stat-grid" id="stats"></div>
+
+      <div class="section-label">Daftar Data Tersedia</div>
+      <div id="recentList"></div>
+      <p id="recentEmptyHint" style="display:none; font-size:12.5px; color:var(--ink-soft); font-weight:600; text-align:center; padding:18px 0;">Belum ada data. Ketuk tombol "+" di bawah untuk mulai.</p>
+    </div>
+  </section>
+  
+  <section class="view" id="view-add">
+    <div class="topbar">
+      <button class="icon-btn" id="btnAddBack" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="topbar-titles"><h2>Tambah Data</h2><span>Isi data sesuai kebutuhan</span></div>
+    </div>
+    <div class="scroll no-nav px">
+      <div class="hint-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <span id="addHint">Isi data sesuai kebutuhan.</span>
+      </div>
+
+      <div id="addFields"></div>
+
+      <button class="btn-primary" id="btnBukaKonfirmasi">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12.5 9.5 18 20 6"/></svg>
+        Simpan Data
+      </button>
+    </div>
+  </section>
+  
+  <section class="view" id="view-detail">
+    <div class="topbar">
+      <button class="icon-btn" id="btnDetailBack" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="topbar-titles"><h2>Detail Data</h2><span id="detailSubtitle">&nbsp;</span></div>
+    </div>
+    <div class="scroll no-nav px">
+      <div class="detail-card" id="detRows"></div>
+
+      <div class="detail-actions" id="detailActionsView">
+        <div class="btn-row">
+          <button class="btn-secondary" id="btnDetailEdit">Edit</button>
+          <button class="btn-danger-outline" id="btnDetailDelete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Hapus</button>
+        </div>
+        <button class="btn-secondary" id="btnDetailClose">Tutup</button>
+      </div>
+      <div class="detail-actions" id="detailActionsEdit" style="display:none;">
+        <div class="btn-row">
+          <button class="btn-secondary" id="btnDetailCancelEdit">Batal</button>
+          <button class="btn-primary" id="btnDetailSaveEdit">Simpan Perubahan</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="view" id="view-settings">
+    <div class="topbar">
+      <button class="icon-btn" id="btnSettingsBack" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="topbar-titles"><h2>Pengaturan</h2><span>Tema, judul tabel, dan lainnya</span></div>
+    </div>
+    <div class="scroll no-nav px">
+      <div class="section-label" style="margin-top:6px;">Judul Tabel</div>
+      <div class="field">
+        <input type="text" id="inputJudulTabel" placeholder="Contoh: Data Servis September">
+      </div>
+
+      <div class="section-label">Pemeliharaan Data</div>
+      <button class="btn-secondary" id="btnOpenTrash">Buka Sampah</button>
+
+      <div class="section-label">Tema Tampilan</div>
+      <div class="theme-opt" data-theme="light"><b>Terang</b><div class="dot"></div></div>
+      <div class="theme-opt" data-theme="dark"><b>Gelap</b><div class="dot"></div></div>
+    </div>
+  </section>
+  
+  <section class="view" id="view-trash">
+    <div class="topbar">
+      <button class="icon-btn" id="btnTrashBack" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="topbar-titles"><h2>Sampah</h2><span id="trashSub">Data yang dihapus muncul di sini</span></div>
+    </div>
+    <div class="scroll no-nav px">
+      <div id="trashList" style="margin-top:6px;"></div>
+      <div id="trashEmptyHint" style="display:none; text-align:center; padding:40px 10px; color:var(--ink-soft); font-size:14px;">Sampah kosong</div>
+      <button class="btn-danger-outline" id="btnEmptyTrash" style="display:none; width:100%; margin-top:14px;">Kosongkan Sampah</button>
+    </div>
+  </section>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <clipPath id="navNotchClip" clipPathUnits="objectBoundingBox">
+        <path id="navNotchPath" d="M0,0 L0.37,0
+                 C0.415,0 0.435,0.02 0.45,0.09
+                 C0.465,0.17 0.48,0.28 0.5,0.28
+                 C0.52,0.28 0.535,0.17 0.55,0.09
+                 C0.565,0.02 0.585,0 0.63,0
+                 L1,0 L1,1 L0,1 Z"/>
+      </clipPath>
+    </defs>
+  </svg>
+  <div class="bottom-nav" id="bottomNav">
+    <div class="bottom-nav-surface">
+      <div class="bottom-nav-bg"></div>
+      <button class="nav-item active" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span>Home</span></button>
+      <button class="nav-item nav-item-add" data-nav="add">
+        <span class="nav-add-fab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span>
+        <span>ADD DATA</span>
+      </button>
+      <button class="nav-item" data-nav="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg><span>Settings</span></button>
+    </div>
+    <div class="bottom-nav-safe"></div>
+  </div>
+    
+  <div class="overlay center" id="overlayConfirm">
+    <div class="modal-card">
+      <div class="modal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></div>
+      <h3>Konfirmasi Data</h3>
+      <p class="desc">Apakah Anda yakin ingin menyimpan data ini?</p>
+      <div class="preview-box" id="cfRows"></div>
+      <div class="btn-row">
+        <button class="btn-secondary" id="btnConfirmBatal">Batal</button>
+        <button class="btn-primary" id="btnConfirmSimpan">Simpan</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="overlay center" id="overlayDelete">
+    <div class="modal-card">
+      <div class="modal-icon danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
+      <h3 id="deleteTitle">Hapus Data?</h3>
+      <p class="desc" id="deleteDesc">Data akan dipindahkan ke Sampah.</p>
+      <div class="pz-wrap" id="pzWrap">
+        <canvas id="pzCanvas"></canvas>
+        <canvas id="pzPiece"></canvas>
+        <button type="button" class="pz-refresh" id="pzRefresh" aria-label="Ganti puzzle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.5 15a9 9 0 1 1-2.1-9.4L23 10"/></svg></button>
+      </div>
+      <div class="pz-track" id="pzTrack">
+        <div class="pz-fill" id="pzFill"></div>
+        <div class="pz-label" id="pzLabel">Geser untuk mencocokkan</div>
+        <button type="button" class="pz-handle" id="pzHandle" aria-label="Geser potongan puzzle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+      <div class="btn-row" style="margin-top:14px;">
+        <button class="btn-secondary" id="btnDeleteBatal">Batal</button>
+        <button class="btn-danger-outline" style="flex:1;" id="btnDeleteYakin" disabled>Ya, Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bukti-viewer-overlay" id="overlayBuktiViewer">
+    <div class="bukti-viewer-stage" id="buktiViewerStage">
+      <button class="bukti-viewer-close" id="btnBuktiViewerClose" aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <button class="bukti-viewer-nav prev" id="buktiViewerPrev" aria-label="Sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <img id="buktiViewerImg" src="" alt="Bukti">
+      <button class="bukti-viewer-nav next" id="buktiViewerNext" aria-label="Berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+      <div class="bukti-viewer-dots" id="buktiViewerDots"></div>
+    </div>
+  </div>
+  <div id="saveStatusIndicator"></div>
+  <div id="migrationToast"></div>
+</div>
+
+<script>
+  const sb = supabaseClient;
+  const SCHEMA = 'custom-data-v1';
+  const BUCKET = 'bukti';
+  const TRASH_DAYS = 30;
+  const MAX_FOTO = 2;
+
+  const qs = new URLSearchParams(location.search);
+  let noteId = qs.get('id');
+  let folderId = qs.get('folder');
+  let folder = null;
+  let cols = [];
+  let auto = { no: true, tanggal: true, jam: true };
+  let records = [];
+  let trash = [];
+  let noteTitle = '';
+  let F = null;
+  let detId = null;
+  let saving = false;
+  let uploading = 0;
+  let viewerUrls = [], viewerIndex = 0;
+
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const pad2 = n => String(n).padStart(2, '0');
+  const pad3 = n => String(n).padStart(3, '0');
+  const uid = () => 'r_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  const ymd = d => d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+  const hm = d => pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+  const dmy = d => pad2(d.getDate()) + '-' + pad2(d.getMonth() + 1) + '-' + d.getFullYear();
+  const byDate = (a, b) => new Date(a.created_at) - new Date(b.created_at);
+  const sortedRecords = () => [...records].sort(byDate);
+  const isEmpty = v => v == null || v === '' || (Array.isArray(v) && !v.length);
+  const missing = r => cols.some(c => c.required && isEmpty(r.v && r.v[c.id]));
+  const numOf = r => auto.no ? pad3(sortedRecords().findIndex(x => x.id === r.id) + 1) : (r.no || '-');
+  const moneyText = v => 'Rp ' + (Number(v) || 0).toLocaleString('id-ID');
+
+  function txt(c, v) {
+    if (isEmpty(v)) return '';
+    if (c.type === 'image') return v.length + ' foto';
+    if (c.type === 'money') return moneyText(v);
+    if (c.type === 'date') { const d = new Date(v + 'T00:00:00'); return isNaN(d) ? String(v) : dmy(d); }
+    return String(v);
+  }
+  function mainOf(r) {
+    const c = cols.find(c => ['text', 'long', 'select'].includes(c.type) && !isEmpty(r.v && r.v[c.id]));
+    return c ? txt(c, r.v[c.id]) : '';
+  }
+  function allPhotoUrls(r) {
+    return Object.values((r && r.v) || {}).flatMap(x => Array.isArray(x) ? x : []).filter(u => typeof u === 'string');
+  }
+
+  function openOverlay(id) { $(id).classList.add('show'); }
+  function closeOverlay(id) { $(id).classList.remove('show'); }
+  document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) closeOverlay(o.id); }));
+
+  function getStoredTheme(){ try { return localStorage.getItem('bm-theme') === 'light' ? 'light' : 'dark'; } catch (e) { return 'dark'; } }
+  function setStoredTheme(t){ try { localStorage.setItem('bm-theme', t === 'light' ? 'light' : 'dark'); } catch (e) {} }
+  function applyTheme(t){ window.bmApplyAppearance(); }
+  function applyThemeUI(){
+    const t = getStoredTheme();
+    document.querySelectorAll('.theme-opt').forEach(el => el.classList.toggle('active', el.dataset.theme === t));
+  }
+  document.querySelectorAll('.theme-opt').forEach(el => el.addEventListener('click', () => {
+    setStoredTheme(el.dataset.theme);
+    applyTheme(el.dataset.theme);
+    applyThemeUI();
+  }));
+  applyTheme(getStoredTheme());
+  applyThemeUI();
+
+  let toastT;
+  function toast(m) {
+    const el = $('migrationToast'); el.textContent = m; el.classList.add('show');
+    clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('show'), 3500);
+  }
+  function closeEditor() {
+    if (window.parent !== window) window.parent.postMessage('close-editor', '*');
+    else location.href = 'dashboard-admin.html';
+  }
+
+  function goView(n) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    $('view-' + n).classList.add('active');
+    $('bottomNav').style.display = (n === 'add' || n === 'detail' || n === 'trash') ? 'none' : 'flex';
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.nav === n));
+    const sc = $('view-' + n).querySelector('.scroll'); if (sc) sc.scrollTop = 0;
+    if (n !== 'add') $('addFields').innerHTML = '';
+    if (n !== 'detail') $('detRows').innerHTML = '';
+    if (n === 'home') renderHome();
+    if (n === 'add') prepAdd();
+    if (n === 'settings') $('inputJudulTabel').value = noteTitle || '';
+    if (n === 'trash') renderTrash();
+  }
+  document.querySelectorAll('.nav-item').forEach(b => b.addEventListener('click', () => goView(b.dataset.nav)));
+  $('btnHomeBack').addEventListener('click', closeEditor);
+  ['btnAddBack', 'btnDetailBack', 'btnDetailClose', 'btnSettingsBack'].forEach(id => $(id).addEventListener('click', () => goView('home')));
+  $('btnOpenTrash').addEventListener('click', () => goView('trash'));
+  $('btnTrashBack').addEventListener('click', () => goView('settings'));
+
+  $('inputJudulTabel').addEventListener('change', async e => {
+    noteTitle = e.target.value.trim();
+    if (noteId && noteTitle) {
+      const { error } = await sb.from('notes').update({ title: noteTitle }).eq('id', noteId);
+      toast(error ? 'Gagal menyimpan judul.' : 'Judul tersimpan.');
+      window.parent.postMessage({ type: 'note-autosaved', noteId, folder: folderId }, '*');
+    }
+  });
+
+  function renderHome() {
+    $('gName').textContent = noteTitle || (folder ? folder.name : '...');
+    const today = ymd(new Date());
+    const money = cols.find(c => c.type === 'money');
+    const st = [
+      ['Total Data', records.length],
+      ['Hari Ini', records.filter(r => ymd(new Date(r.created_at)) === today).length]
+    ];
+    st.push(money
+      ? ['Total ' + money.label, moneyText(records.reduce((a, r) => a + (Number(r.v && r.v[money.id]) || 0), 0)), true]
+      : ['Bulan Ini', records.filter(r => ymd(new Date(r.created_at)).slice(0, 7) === today.slice(0, 7)).length]);
+    st.push(['Belum Lengkap', records.filter(missing).length]);
+    $('stats').innerHTML = st.map(s => `<div class="stat-card"><div class="stat-label">${esc(s[0])}</div><div class="stat-value ${s[2] ? 'money' : ''}">${esc(s[1])}</div></div>`).join('');
+
+    const all = sortedRecords().reverse();
+    $('recentEmptyHint').style.display = all.length ? 'none' : 'block';
+    $('recentList').innerHTML = all.map(r => {
+      const v = c => r.v && r.v[c.id];
+      const main = cols.find(c => ['text', 'long', 'select'].includes(c.type) && !isEmpty(v(c)));
+      const rest = cols.filter(c => c !== main && !['money', 'image'].includes(c.type) && !isEmpty(v(c))).slice(0, 3).map(c => esc(txt(c, v(c))));
+      const d = new Date(r.created_at);
+      const photo = cols.some(c => c.type === 'image' && !isEmpty(v(c))) ? '<span class="r-photo-badge">&#128247;</span>' : '';
+      const right = money && !isEmpty(v(money)) ? `<div class="r-right">${photo}${esc(txt(money, v(money)))}</div>`
+        : missing(r) ? `<div class="r-right pending">${photo}Belum lengkap</div>` : `<div class="r-right">${photo}</div>`;
+      return `<div class="recent-row tap" data-id="${esc(r.id)}"><div class="r-no">${esc(numOf(r))}</div><div class="r-mid"><b>${main ? esc(txt(main, v(main))) : '(kosong)'}</b><span>${[...rest, dmy(d) + ' ' + hm(d)].join(' &middot; ')}</span></div>${right}</div>`;
+    }).join('');
+  }
+  $('recentList').addEventListener('click', e => { const el = e.target.closest('.recent-row'); if (el) openDetail(el.dataset.id); });
+
+  const DZ = cid => `<div class="bukti-dropzone" id="dz_${cid}">
+      <input type="file" accept="image/*" multiple hidden data-file="${cid}">
+      <input type="file" accept="image/*" capture="environment" hidden data-file="${cid}">
+      <div class="bukti-empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span>Tarik &amp; lepas gambar di sini</span>
+        <div class="bukti-btn-row"><button type="button" class="bukti-pick-btn" data-pick="${cid}:0">Galeri</button><button type="button" class="bukti-pick-btn" data-pick="${cid}:1">Kamera</button></div>
+      </div>
+      <div class="bukti-thumbs" id="th_${cid}"></div>
+    </div>`;
+
+  function ctl(c, v) {
+    const a = `data-col="${esc(c.id)}"`;
+    if (c.type === 'long') return `<textarea ${a}>${esc(v || '')}</textarea>`;
+    if (c.type === 'select') return `<select ${a}><option value="">Pilih...</option>${(c.options || []).map(o => `<option ${o === v ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select>`;
+    if (c.type === 'date') return `<input type="date" ${a} value="${esc(v || '')}">`;
+    if (c.type === 'money') return `<div class="price-input-wrap"><span class="price-prefix">Rp</span><input type="text" inputmode="numeric" ${a} data-money="1" placeholder="0" autocomplete="off" value="${v ? Number(v).toLocaleString('id-ID') : ''}"></div>`;
+    if (c.type === 'number') return `<input type="text" inputmode="decimal" ${a} placeholder="0" autocomplete="off" value="${esc(v || '')}">`;
+    if (c.type === 'image') return DZ(c.id);
+    return `<input type="text" ${a} placeholder="${esc(c.label)}" autocomplete="off" value="${esc(v || '')}">`;
+  }
+  function formHtml(mode, rec) {
+    const wrap = (label, inner, opt) => mode === 'add'
+      ? `<div class="field"><label>${esc(label)}${opt ? ' <span class="opt-tag">(opsional)</span>' : ''}</label>${inner}</div>`
+      : `<div class="detail-row"><label>${esc(label)}</label>${inner}</div>`;
+    const ro = t => mode === 'add'
+      ? `<div class="readonly-box"><span>${esc(t)}</span><span class="auto-tag">Auto</span></div>`
+      : `<div class="val">${esc(t)}</div>`;
+    const now = rec ? new Date(rec.created_at) : new Date();
+    return wrap('Nomor', auto.no ? ro(rec ? numOf(rec) : pad3(records.length + 1)) : `<input type="text" data-sys="no" placeholder="Contoh: 001" autocomplete="off" value="${esc(F.no)}">`)
+      + wrap('Tanggal', auto.tanggal ? ro(dmy(now)) : `<input type="date" data-sys="tanggal" value="${esc(F.tanggal)}">`)
+      + wrap('Waktu', auto.jam ? ro(hm(now)) : `<input type="time" data-sys="jam" value="${esc(F.jam)}">`)
+      + cols.map(c => wrap(c.label, ctl(c, F.vals[c.id]), !c.required)).join('');
+  }
+  function initForm(rec) {
+    const base = rec ? new Date(rec.created_at) : new Date();
+    F = { vals: JSON.parse(JSON.stringify((rec && rec.v) || {})), no: rec ? (rec.no || '') : '', tanggal: ymd(base), jam: hm(base) };
+    cols.filter(c => c.type === 'image').forEach(c => { F.vals[c.id] = (F.vals[c.id] || []).map(u => ({ url: u })); });
+  }
+  function afterForm() { cols.filter(c => c.type === 'image').forEach(c => thumbs(c.id)); }
+
+  function prepAdd() {
+    initForm(null);
+    const req = cols.filter(c => c.required).map(c => c.label);
+    $('addHint').textContent = (req.length ? req.join(' dan ') + ' wajib diisi. ' : '') + 'Isian lain boleh dikosongkan dan dilengkapi nanti lewat Edit.';
+    $('addFields').innerHTML = formHtml('add', null);
+    afterForm();
+  }
+
+  function thumbs(cid) {
+    const arr = F.vals[cid] || [], dz = $('dz_' + cid), box = $('th_' + cid);
+    if (!dz || !box) return;
+    box.innerHTML = arr.map((it, i) => `<div class="bukti-thumb ${it.st === 'error' ? 'error' : ''}"><img src="${esc(it.pv || it.url)}" alt="Bukti ${i + 1}">${it.st === 'up' ? '<div class="bukti-thumb-spinner"></div>' : ''}<button type="button" class="bukti-thumb-remove" data-rm="${cid}:${i}" aria-label="Hapus gambar">&times;</button></div>`).join('');
+    dz.classList.toggle('has-items', arr.length > 0);
+    dz.classList.toggle('full', arr.length >= MAX_FOTO);
+  }
+  function toBlob(file) {
+    return new Promise((res, rej) => {
+      const img = new Image(), rd = new FileReader();
+      rd.onload = e => { img.src = e.target.result; };
+      img.onload = () => {
+        let w = img.naturalWidth, h = img.naturalHeight; const m = 1280;
+        if (w > m || h > m) { if (w > h) { h = Math.round(h * m / w); w = m; } else { w = Math.round(w * m / h); h = m; } }
+        const cv = document.createElement('canvas'); cv.width = w; cv.height = h; cv.getContext('2d').drawImage(img, 0, 0, w, h);
+        cv.toBlob(b => b ? res(b) : rej(new Error('gagal')), 'image/jpeg', 0.8);
+      };
+      img.onerror = rd.onerror = () => rej(new Error('File bukan gambar'));
+      rd.readAsDataURL(file);
+    });
+  }
+  async function addImages(cid, files) {
+    const arr = F.vals[cid] = F.vals[cid] || [];
+    if (arr.length >= MAX_FOTO) return toast('Maksimal ' + MAX_FOTO + ' gambar.');
+    for (const f of Array.from(files).filter(f => f.type.startsWith('image/')).slice(0, MAX_FOTO - arr.length)) {
+      const it = { url: '', pv: URL.createObjectURL(f), st: 'up' };
+      arr.push(it); thumbs(cid); uploading++;
+      try {
+        const path = ymd(new Date()) + '/' + uid() + '.jpg';
+        const { error } = await sb.storage.from(BUCKET).upload(path, await toBlob(f), { contentType: 'image/jpeg' });
+        if (error) throw error;
+        it.url = sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl; it.st = 'done';
+      } catch (e) { arr.splice(arr.indexOf(it), 1); toast('Foto gagal diunggah, coba lagi.'); }
+      uploading--; thumbs(cid);
+    }
+  }
+  const urlsOf = arr => (arr || []).filter(x => x.url).map(x => x.url);
+
+  function openViewer(list, i) { viewerUrls = list; viewerIndex = i; drawViewer(); openOverlay('overlayBuktiViewer'); }
+  function drawViewer() {
+    $('buktiViewerImg').src = viewerUrls[viewerIndex] || '';
+    $('buktiViewerDots').innerHTML = viewerUrls.map((_, i) => `<span class="bukti-dot ${i === viewerIndex ? 'active' : ''}"></span>`).join('');
+    $('buktiViewerPrev').style.display = viewerIndex > 0 ? 'flex' : 'none';
+    $('buktiViewerNext').style.display = viewerIndex < viewerUrls.length - 1 ? 'flex' : 'none';
+  }
+  $('buktiViewerPrev').addEventListener('click', () => { viewerIndex--; drawViewer(); });
+  $('buktiViewerNext').addEventListener('click', () => { viewerIndex++; drawViewer(); });
+  $('btnBuktiViewerClose').addEventListener('click', () => closeOverlay('overlayBuktiViewer'));
+  (function(){
+    let x0 = null;
+    const stage = $('buktiViewerStage');
+    stage.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+    stage.addEventListener('touchend', e => {
+      if (x0 == null) return;
+      const dx = e.changedTouches[0].clientX - x0; x0 = null;
+      if (Math.abs(dx) < 50) return;
+      if (dx < 0 && viewerIndex < viewerUrls.length - 1) { viewerIndex++; drawViewer(); }
+      if (dx > 0 && viewerIndex > 0) { viewerIndex--; drawViewer(); }
+    }, { passive: true });
+  })();
+
+  document.addEventListener('input', e => {
+    const t = e.target; if (!F || !t.dataset) return;
+    if (t.dataset.sys) F[t.dataset.sys] = t.value;
+    else if (t.dataset.col) {
+      if (t.dataset.money) {
+        const d = t.value.replace(/\D/g, '').slice(0, 12);
+        t.value = d ? Number(d).toLocaleString('id-ID') : '';
+        F.vals[t.dataset.col] = d;
+      } else if (t.getAttribute('inputmode') === 'decimal') {
+        t.value = t.value.replace(/[^\d.,-]/g, '');
+        F.vals[t.dataset.col] = t.value;
+      } else F.vals[t.dataset.col] = t.value;
+    }
+  });
+  document.addEventListener('change', e => {
+    const t = e.target; if (!t.dataset) return;
+    if (t.dataset.col && t.tagName === 'SELECT' && F) F.vals[t.dataset.col] = t.value;
+    if (t.dataset.file) { addImages(t.dataset.file, t.files); t.value = ''; }
+  });
+  document.addEventListener('click', e => {
+    const t = e.target.closest('[data-pick],[data-rm],[data-vw]'); if (!t) return;
+    if (t.dataset.pick) { const [cid, k] = t.dataset.pick.split(':'); $('dz_' + cid).querySelectorAll('input[type=file]')[+k].click(); }
+    else if (t.dataset.rm) { const [cid, i] = t.dataset.rm.split(':'); F.vals[cid].splice(+i, 1); thumbs(cid); }
+    else if (t.dataset.vw) { const [cid, i] = t.dataset.vw.split(':'), r = records.find(x => x.id === detId); openViewer((r && r.v && r.v[cid]) || [], +i); }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || e.isComposing) return;
+    const t = e.target;
+    if (!t || t.tagName !== 'INPUT' || !(t.dataset.col || t.dataset.sys)) return;
+    e.preventDefault();
+    const all = [...(t.closest('#addFields, #detRows') || document).querySelectorAll('input[data-col], input[data-sys], select[data-col], textarea[data-col]')];
+    const nx = all[all.indexOf(t) + 1];
+    if (nx) nx.focus(); else t.blur();
+  });
+  document.addEventListener('click', e => {
+    const w = e.target.closest && e.target.closest('.price-input-wrap');
+    if (w && e.target.tagName !== 'INPUT') { const i = w.querySelector('input'); if (i) i.focus(); }
+  });
+
+  function check() {
+    if (uploading) return 'Tunggu foto selesai diunggah dulu.';
+    for (const c of cols) {
+      const v = F.vals[c.id];
+      if (c.required && (c.type === 'image' ? !urlsOf(v).length : !String(v == null ? '' : v).trim())) return '"' + c.label + '" wajib diisi.';
+    }
+    if (!auto.tanggal && !F.tanggal) return 'Tanggal wajib diisi.';
+    if (!auto.jam && !F.jam) return 'Waktu wajib diisi.';
+    return '';
+  }
+  function cleanVals() {
+    const v = {};
+    cols.forEach(c => {
+      const x = F.vals[c.id];
+      if (c.type === 'image') { const u = urlsOf(x); if (u.length) v[c.id] = u; }
+      else if (x != null && String(x).trim() !== '') v[c.id] = String(x).trim();
+    });
+    return v;
+  }
+
+  async function persist(mutate) {
+    for (let attempt = 0; attempt < 6; attempt++) {
+      const done = await persistOnce(mutate);
+      if (done) return;
+      await new Promise(r => setTimeout(r, 150 * (attempt + 1) + Math.random() * 200));
+    }
+    throw new Error('Gagal menyimpan: data sedang diubah di perangkat lain. Coba lagi.');
+  }
+
+  async function persistOnce(mutate) {
+    let content = {};
+    let lockAt = null;
+    if (noteId) {
+      const { data, error } = await sb.from('notes').select('content,updated_at').eq('id', noteId).single();
+      if (error) throw error;
+      content = data.content && typeof data.content === 'object' ? data.content : {};
+      lockAt = data.updated_at;
+    }
+    const cur = Array.isArray(content.records) ? content.records : [];
+    const tr = Array.isArray(content.trash) ? content.trash : [];
+    mutate(cur, tr);
+    const last = [...cur].sort(byDate).pop(), d = new Date();
+    const first = last && cols.map(c => txt(c, last.v && last.v[c.id])).find(x => x && !/ foto$/.test(x));
+    const payload = {
+      content: { ...content, schema: SCHEMA, records: cur, trash: tr, columns: cols.map(c => ({ id: c.id, label: c.label, type: c.type })), auto },
+      preview: first || '',
+      date_tag: pad2(d.getHours() % 12 || 12) + ':' + pad2(d.getMinutes()) + (d.getHours() >= 12 ? ' PM' : ' AM')
+    };
+    if (noteId) {
+      let q = sb.from('notes').update(payload).eq('id', noteId);
+      if (lockAt) q = q.eq('updated_at', lockAt);
+      const { data: upd, error } = await q.select('id');
+      if (error) throw error;
+      if (!upd || !upd.length) return false;
+    } else {
+      const f = [...cur].sort(byDate)[0];
+      const { data, error } = await sb.from('notes').insert({ ...payload, title: noteTitle || (folder.name + ' ' + dmy(new Date(f ? f.created_at : Date.now()))), folder_id: folderId }).select().single();
+      if (error) throw error;
+      noteId = data.id; noteTitle = noteTitle || data.title || '';
+    }
+    records = cur; trash = tr;
+    window.parent.postMessage({ type: 'note-autosaved', noteId, folder: folderId }, '*');
+    return true;
+  }
+
+  async function doSave(editId) {
+    if (saving) return null;
+    saving = true;
+    const old = editId ? records.find(r => r.id === editId) : null;
+    const base = old ? new Date(old.created_at) : new Date();
+    const rec = {
+      id: old ? old.id : uid(),
+      v: cleanVals(),
+      created_at: new Date((auto.tanggal ? ymd(base) : F.tanggal) + 'T' + (auto.jam ? hm(base) : F.jam) + ':00').toISOString()
+    };
+    if (!auto.no) rec.no = (F.no || '').trim();
+    try {
+      await persist(cur => { const i = cur.findIndex(r => r.id === rec.id); if (i >= 0) cur[i] = rec; else cur.push(rec); });
+      saving = false; toast('Data tersimpan.'); return rec.id;
+    } catch (e) { saving = false; toast('Gagal menyimpan: ' + (e.message || e)); return null; }
+  }
+
+  $('btnBukaKonfirmasi').addEventListener('click', () => {
+    const bad = check(); if (bad) return toast(bad);
+    const now = new Date();
+    const rows = [
+      ['Nomor', auto.no ? pad3(records.length + 1) : (F.no || '-')],
+      ['Tanggal', auto.tanggal ? dmy(now) : dmy(new Date(F.tanggal + 'T00:00:00'))],
+      ['Waktu', auto.jam ? hm(now) : F.jam],
+      ...cols.map(c => [c.label, c.type === 'image' ? (urlsOf(F.vals[c.id]).length ? urlsOf(F.vals[c.id]).length + ' foto' : '') : txt(c, F.vals[c.id])])
+    ];
+    $('cfRows').innerHTML = rows.map(r => `<div class="preview-row"><span>${esc(r[0])}</span><span>${esc(r[1] || '—')}</span></div>`).join('');
+    openOverlay('overlayConfirm');
+  });
+  $('btnConfirmBatal').addEventListener('click', () => closeOverlay('overlayConfirm'));
+  $('btnConfirmSimpan').addEventListener('click', async () => {
+    const id = await doSave(null);
+    closeOverlay('overlayConfirm');
+    if (id) goView('home');
+  });
+
+  function openDetail(id) { detId = id; goView('detail'); renderDetail(false); }
+  function renderDetail(edit) {
+    const r = records.find(x => x.id === detId);
+    if (!r) return goView('home');
+    const d = new Date(r.created_at);
+    $('detailSubtitle').textContent = 'No ' + numOf(r) + ' · ' + dmy(d) + ' ' + hm(d);
+    $('detailActionsView').style.display = edit ? 'none' : '';
+    $('detailActionsEdit').style.display = edit ? '' : 'none';
+    if (edit) { initForm(r); $('detRows').innerHTML = formHtml('edit', r); afterForm(); return; }
+    const row = (l, i) => `<div class="detail-row"><label>${esc(l)}</label>${i}</div>`;
+    $('detRows').innerHTML = row('Nomor', `<div class="val">${esc(numOf(r))}</div>`)
+      + row('Tanggal', `<div class="val">${dmy(d)}</div>`)
+      + row('Waktu', `<div class="val">${hm(d)}</div>`)
+      + cols.map(c => {
+        const v = r.v && r.v[c.id];
+        return row(c.label, c.type === 'image' && !isEmpty(v)
+          ? `<div class="bukti-thumbs">${v.map((u, i) => `<div class="bukti-thumb" data-vw="${esc(c.id)}:${i}"><img src="${esc(u)}" alt="Bukti"></div>`).join('')}</div>`
+          : `<div class="val ${isEmpty(v) ? 'empty' : ''}">${esc(txt(c, v) || 'Belum diisi')}</div>`);
+      }).join('');
+  }
+  $('btnDetailEdit').addEventListener('click', () => renderDetail(true));
+  $('btnDetailCancelEdit').addEventListener('click', () => renderDetail(false));
+  $('btnDetailSaveEdit').addEventListener('click', async () => {
+    const bad = check(); if (bad) return toast(bad);
+    if (await doSave(detId)) renderDetail(false);
+  });
+
+  let deleteMode = 'soft', deleteTargetId = null;
+  function openDeleteConfirm(mode, targetId) {
+    deleteMode = mode; deleteTargetId = targetId;
+    const b = $('btnDeleteYakin');
+    if (mode === 'soft') {
+      $('deleteTitle').textContent = 'Hapus Data?';
+      $('deleteDesc').textContent = 'Data akan dipindahkan ke Sampah dan bisa dipulihkan selama ' + TRASH_DAYS + ' hari. Geser potongan gambar ke lubang yang pas untuk melanjutkan.';
+      b.textContent = 'Ya, Hapus';
+    } else if (mode === 'purge') {
+      $('deleteTitle').textContent = 'Hapus Permanen?';
+      $('deleteDesc').textContent = 'Data ini (beserta fotonya) akan hilang selamanya dan TIDAK bisa dipulihkan lagi. Geser potongan gambar ke lubang yang pas untuk melanjutkan.';
+      b.textContent = 'Hapus Permanen';
+    } else {
+      $('deleteTitle').textContent = 'Kosongkan Sampah?';
+      $('deleteDesc').textContent = trash.length + ' data di Sampah akan hilang selamanya dan TIDAK bisa dipulihkan lagi. Geser potongan gambar ke lubang yang pas untuk melanjutkan.';
+      b.textContent = 'Kosongkan';
+    }
+    openOverlay('overlayDelete');
+    deletePuzzle.reset();
+  }
+  function removePhotosOf(list) {
+    const paths = [];
+    (list || []).forEach(r => allPhotoUrls(r).forEach(u => { const k = u.indexOf('/' + BUCKET + '/'); if (k > -1) paths.push(u.slice(k + BUCKET.length + 2)); }));
+    if (paths.length) { try { sb.storage.from(BUCKET).remove(paths); } catch (e) {} }
+  }
+
+  $('btnDetailDelete').addEventListener('click', () => openDeleteConfirm('soft', detId));
+  $('btnDeleteBatal').addEventListener('click', () => closeOverlay('overlayDelete'));
+  $('btnDeleteYakin').addEventListener('click', async () => {
+    if (!deletePuzzle.isSolved()) return;
+    closeOverlay('overlayDelete');
+    try {
+      if (deleteMode === 'soft') {
+        if (!records.find(r => r.id === deleteTargetId)) return;
+        await persist((cur, tr) => {
+          const i = cur.findIndex(r => r.id === deleteTargetId);
+          if (i < 0) return;
+          const [rec] = cur.splice(i, 1);
+          tr.push({ ...rec, deleted_at: new Date().toISOString() });
+        });
+        toast('Data dipindahkan ke Sampah. Bisa dipulihkan ' + TRASH_DAYS + ' hari (Pengaturan → Sampah).');
+        goView('home');
+      } else if (deleteMode === 'purge') {
+        let gone = null;
+        await persist((cur, tr) => { const i = tr.findIndex(t => t.id === deleteTargetId); if (i >= 0) gone = tr.splice(i, 1)[0]; });
+        if (gone) removePhotosOf([gone]);
+        toast('Data dihapus permanen.'); renderTrash();
+      } else {
+        let gone = [];
+        await persist((cur, tr) => { gone = tr.splice(0, tr.length); });
+        removePhotosOf(gone);
+        toast('Sampah dikosongkan.'); renderTrash();
+      }
+    } catch (e) { toast('Gagal: ' + (e.message || e)); }
+  });
+
+  function daysLeft(item) {
+    const d = new Date(item.deleted_at).getTime();
+    if (isNaN(d)) return TRASH_DAYS;
+    return Math.max(0, Math.ceil((d + TRASH_DAYS * 86400000 - Date.now()) / 86400000));
+  }
+  function renderTrash() {
+    $('trashSub').textContent = trash.length ? trash.length + ' data · otomatis hilang setelah ' + TRASH_DAYS + ' hari' : 'Data yang dihapus muncul di sini';
+    $('trashEmptyHint').style.display = trash.length ? 'none' : 'block';
+    $('btnEmptyTrash').style.display = trash.length ? 'block' : 'none';
+    const rows = [...trash].sort((a, b) => new Date(b.deleted_at) - new Date(a.deleted_at));
+    $('trashList').innerHTML = rows.map(r => {
+      const dt = new Date(r.deleted_at);
+      const dtxt = isNaN(dt.getTime()) ? '—' : dmy(dt) + ' ' + hm(dt);
+      const rest = cols.filter(c => !['image'].includes(c.type) && !isEmpty(r.v && r.v[c.id]) && txt(c, r.v[c.id]) !== mainOf(r)).slice(0, 3).map(c => esc(txt(c, r.v[c.id])));
+      return `
+        <div class="trash-item">
+          <div class="recent-row" style="cursor:default;">
+            <div class="r-mid">
+              <b>${esc(mainOf(r)) || '(kosong)'}</b>
+              <span>${rest.join(' &middot; ') || '—'}</span>
+              <span>Dihapus ${esc(dtxt)} &middot; sisa ${daysLeft(r)} hari</span>
+            </div>
+          </div>
+          <div class="trash-actions">
+            <button type="button" class="btn-secondary" data-act="restore" data-id="${esc(r.id)}">Pulihkan</button>
+            <button type="button" class="btn-danger-outline" data-act="purge" data-id="${esc(r.id)}">Hapus Permanen</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+  $('trashList').addEventListener('click', async e => {
+    const btn = e.target.closest('button[data-act]'); if (!btn) return;
+    const id = btn.dataset.id;
+    if (btn.dataset.act === 'purge') return openDeleteConfirm('purge', id);
+    btn.disabled = true;
+    try {
+      await persist((cur, tr) => {
+        const i = tr.findIndex(t => t.id === id); if (i < 0) return;
+        const [it] = tr.splice(i, 1); delete it.deleted_at;
+        if (cur.some(r => r.id === it.id)) it.id = uid();
+        cur.push(it);
+      });
+      toast('Data berhasil dipulihkan.');
+    } catch (err) { toast('Gagal memulihkan: ' + (err.message || err)); }
+    renderTrash();
+  });
+  $('btnEmptyTrash').addEventListener('click', () => { if (trash.length) openDeleteConfirm('empty', null); });
+
+  async function purgeExpired() {
+    const expired = trash.filter(t => { const d = new Date(t.deleted_at).getTime(); return !isNaN(d) && Date.now() - d >= TRASH_DAYS * 86400000; });
+    if (!expired.length || !noteId) return;
+    const ids = new Set(expired.map(t => t.id));
+    try { await persist((cur, tr) => { for (let i = tr.length - 1; i >= 0; i--) if (ids.has(tr[i].id)) tr.splice(i, 1); }); removePhotosOf(expired); }
+    catch (e) { console.warn('Gagal membuang Sampah kedaluwarsa:', e && e.message); }
+  }
+
+  const deletePuzzle = (function(){
+    const wrap = document.getElementById('pzWrap');
+    const canvas = document.getElementById('pzCanvas');
+    const piece = document.getElementById('pzPiece');
+    const track = document.getElementById('pzTrack');
+    const fill = document.getElementById('pzFill');
+    const label = document.getElementById('pzLabel');
+    const handle = document.getElementById('pzHandle');
+    const btnYakin = document.getElementById('btnDeleteYakin');
+    const btnRefresh = document.getElementById('pzRefresh');
+
+    const P = 40;
+    const R = 7;
+    const H = 130;
+    const HANDLE = 39;
+    const TOL = 6;
+    const LABEL_DEFAULT = 'Geser untuk mencocokkan';
+
+    let W = 300, dpr = 1, tx = 0, ty = 0, sceneSeed = 1;
+    let solved = false, dragging = false, startX = 0, startOff = 0, offset = 0, maxOff = 1, pieceMax = 1, dragX = 0;
+    let failTimer = null;
+
+    function makeRng(seed){
+      let a = seed >>> 0;
+      return function(){ a = (Math.imul(a, 1664525) + 1013904223) >>> 0; return a / 4294967296; };
+    }
+
+    function piecePath(ctx, x, y){
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + P / 2 - R, y);
+      ctx.arc(x + P / 2, y, R, Math.PI, 2 * Math.PI, false);
+      ctx.lineTo(x + P, y);
+      ctx.lineTo(x + P, y + P / 2 - R);
+      ctx.arc(x + P, y + P / 2, R, -Math.PI / 2, Math.PI / 2, false);
+      ctx.lineTo(x + P, y + P);
+      ctx.lineTo(x, y + P);
+      ctx.closePath();
+    }
+
+    function drawScene(ctx){
+      const rnd = makeRng(sceneSeed);
+      const h1 = Math.floor(rnd() * 360), h2 = (h1 + 40 + Math.floor(rnd() * 120)) % 360;
+      const g = ctx.createLinearGradient(0, 0, W, H);
+      g.addColorStop(0, 'hsl(' + h1 + ',70%,58%)');
+      g.addColorStop(1, 'hsl(' + h2 + ',72%,42%)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+      for (let i = 0; i < 9; i++){
+        ctx.fillStyle = 'hsla(' + Math.floor(rnd() * 360) + ',75%,' + (40 + Math.floor(rnd() * 30)) + '%,0.55)';
+        ctx.beginPath();
+        ctx.arc(rnd() * W, rnd() * H, 12 + rnd() * 34, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+      for (let i = 0; i < 6; i++){
+        ctx.fillStyle = 'hsla(' + Math.floor(rnd() * 360) + ',70%,60%,0.5)';
+        ctx.beginPath();
+        const x = rnd() * W, y = rnd() * H;
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + 30 + rnd() * 50, y + (rnd() - 0.5) * 60);
+        ctx.lineTo(x + (rnd() - 0.5) * 60, y + 30 + rnd() * 40);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 5; i++){
+        ctx.beginPath();
+        ctx.moveTo(rnd() * W, 0);
+        ctx.lineTo(rnd() * W, H);
+        ctx.stroke();
+      }
+    }
+
+    function render(){
+      canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+      canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+      const c = canvas.getContext('2d');
+      c.setTransform(dpr, 0, 0, dpr, 0, 0);
+      drawScene(c);
+      piecePath(c, tx, ty);
+      c.fillStyle = 'rgba(0,0,0,0.5)';
+      c.fill();
+      c.strokeStyle = 'rgba(255,255,255,0.85)';
+      c.lineWidth = 1.5;
+      c.stroke();
+
+      const pw = P + R + 4, ph = P + R + 4;
+      piece.width = Math.round(pw * dpr); piece.height = Math.round(ph * dpr);
+      piece.style.width = pw + 'px'; piece.style.height = ph + 'px';
+      piece.style.top = (ty - (R + 2)) + 'px';
+      const p = piece.getContext('2d');
+      p.setTransform(dpr, 0, 0, dpr, 0, 0);
+      p.clearRect(0, 0, pw, ph);
+      p.save();
+      p.translate(2 - tx, R + 2 - ty);
+      piecePath(p, tx, ty);
+      p.clip();
+      drawScene(p);
+      p.restore();
+      p.save();
+      p.translate(2 - tx, R + 2 - ty);
+      piecePath(p, tx, ty);
+      p.strokeStyle = 'rgba(255,255,255,0.95)';
+      p.lineWidth = 2;
+      p.stroke();
+      p.restore();
+    }
+
+    function setOffset(o){
+      offset = Math.max(0, Math.min(maxOff, o));
+      handle.style.transform = 'translateX(' + offset + 'px)';
+      fill.style.width = (offset + HANDLE + 2) + 'px';
+      dragX = maxOff > 0 ? (offset / maxOff) * pieceMax : 0;
+      piece.style.transform = 'translateX(' + (dragX - 2) + 'px)';
+    }
+
+    function reset(){
+      clearTimeout(failTimer);
+      solved = false; dragging = false;
+      wrap.parentElement.classList.remove('pz-anim');
+      track.classList.remove('ok');
+      label.textContent = LABEL_DEFAULT;
+      btnYakin.disabled = true;
+
+      W = Math.max(220, Math.floor(wrap.clientWidth) || 300);
+      dpr = window.devicePixelRatio || 1;
+      sceneSeed = Math.floor(Math.random() * 1e9) + 1;
+      pieceMax = W - P - R - 2;
+      const minX = Math.round(W * 0.42);
+      tx = Math.round(minX + Math.random() * (pieceMax - minX));
+      ty = Math.round((R + 8) + Math.random() * (H - P - (R + 8) - 8));
+      maxOff = Math.max(1, track.clientWidth - HANDLE - 4);
+      render();
+      setOffset(0);
+    }
+
+    function fail(){
+      wrap.classList.remove('fail'); void wrap.offsetWidth; wrap.classList.add('fail');
+      wrap.parentElement.classList.add('pz-anim');
+      setOffset(0);
+      failTimer = setTimeout(reset, 380);
+    }
+
+    handle.addEventListener('pointerdown', (e) => {
+      if (solved) return;
+      dragging = true; startX = e.clientX; startOff = offset;
+      wrap.parentElement.classList.remove('pz-anim');
+      try { handle.setPointerCapture(e.pointerId); } catch (err) {}
+      e.preventDefault();
+    });
+    handle.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      setOffset(startOff + (e.clientX - startX));
+    });
+    function endDrag(){
+      if (!dragging) return;
+      dragging = false;
+      if (offset < 6) return;
+      if (Math.abs(dragX - tx) <= TOL) {
+        solved = true;
+        setOffset(offset);
+        track.classList.add('ok');
+        label.textContent = 'Terverifikasi';
+        btnYakin.disabled = false;
+      } else {
+        fail();
+      }
+    }
+    handle.addEventListener('pointerup', endDrag);
+    handle.addEventListener('pointercancel', endDrag);
+    btnRefresh.addEventListener('click', reset);
+
+    return { reset: reset, isSolved: function(){ return solved; } };
+  })();
+
+  function updateNavNotch(){
+    var surface = document.querySelector('.bottom-nav-surface');
+    var pathEl  = document.getElementById('navNotchPath');
+    if (!surface || !pathEl) return;
+
+    var fabSize = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fab-size')) || 44;
+    var navWidth  = surface.offsetWidth  || 360;
+    var barHeight = surface.offsetHeight || 64;
+    if (!navWidth || !barHeight) return;
+
+    var notchTopWidth = fabSize + 16;
+    var notchDepth = Math.min(fabSize * 0.36, barHeight * 0.5);
+
+    var cx = navWidth / 2;
+    var x1 = cx - notchTopWidth / 2;
+    var w  = cx - x1;
+
+    function pt(tFrac, yFrac){
+      return { x:(x1 + tFrac * w) / navWidth, y:(yFrac * notchDepth) / barHeight };
+    }
+    var cxFrac = cx / navWidth;
+    function mirror(p){ return { x:2 * cxFrac - p.x, y:p.y }; }
+
+    var C1 = pt(0.346, 0), C2 = pt(0.5, 0.071), E1 = pt(0.615, 0.321);
+    var C3 = pt(0.731, 0.607), C4 = pt(0.846, 1.0);
+    var C3m = mirror(C3), C4m = mirror(C4), E1m = mirror(E1), C2m = mirror(C2), C1m = mirror(C1);
+    var x1Frac = x1 / navWidth, x2Frac = mirror({x:x1Frac,y:0}).x, peakY = notchDepth / barHeight;
+
+    var d = 'M0,0 L' + x1Frac + ',0'
+      + ' C' + C1.x + ',' + C1.y + ' ' + C2.x + ',' + C2.y + ' ' + E1.x + ',' + E1.y
+      + ' C' + C3.x + ',' + C3.y + ' ' + C4.x + ',' + C4.y + ' ' + cxFrac + ',' + peakY
+      + ' C' + C4m.x + ',' + C4m.y + ' ' + C3m.x + ',' + C3m.y + ' ' + E1m.x + ',' + E1m.y
+      + ' C' + C2m.x + ',' + C2m.y + ' ' + C1m.x + ',' + C1m.y + ' ' + x2Frac + ',0'
+      + ' L1,0 L1,1 L0,1 Z';
+
+    pathEl.setAttribute('d', d);
+  }
+  window.addEventListener('resize', updateNavNotch);
+  window.addEventListener('load', updateNavNotch);
+  updateNavNotch();
+
+  (async function init() {
+    try {
+      if (noteId) {
+        const { data: n, error } = await sb.from('notes').select('*').eq('id', noteId).single();
+        if (error || !n) throw new Error('Data tidak ditemukan.');
+        if (n.content && n.content.schema && n.content.schema !== SCHEMA) throw new Error('Data ini bukan milik folder custom.');
+        folderId = n.folder_id; noteTitle = n.title || '';
+        records = n.content && Array.isArray(n.content.records) ? n.content.records : [];
+        trash = n.content && Array.isArray(n.content.trash) ? n.content.trash : [];
+      }
+      if (!folderId) throw new Error('Folder tidak ditemukan.');
+      const { data: f, error: e2 } = await sb.from('folders').select('*').eq('id', folderId).single();
+      if (e2 || !f) throw new Error('Folder tidak ditemukan.');
+      if (!f.schema || !Array.isArray(f.schema.columns)) throw new Error('Folder ini bukan folder custom.');
+      folder = f; cols = f.schema.columns.filter(c => !c.hidden);
+      const a = f.schema.auto || {};
+      auto = { no: a.no !== false, tanggal: a.tanggal !== false, jam: a.jam !== false };
+      renderHome();
+      purgeExpired();
+    } catch (e) {
+      $('recentList').innerHTML = '<p style="text-align:center;padding:30px 10px;color:var(--ink-soft);font-size:14px;">' + esc(e.message || 'Gagal memuat — cek koneksi lalu buka ulang.') + '</p>';
+    }
+  })().finally(() => document.documentElement.classList.remove('is-loading'));
+</script>
+<script src="/bm-swipe-back.js" defer></script>
+<script src="/bm-jarvis.js" defer></script>
+</body>
+</html>

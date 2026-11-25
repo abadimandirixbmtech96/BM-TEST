@@ -202,6 +202,8 @@
       tWrap.setAttribute('aria-live', 'polite');
       d.body.appendChild(tWrap);
     }
+    var last = tWrap.lastElementChild;
+    if (last && last._u && last._u.msg === msg && !last._u.gone()) { last._u.again(); return last._u; }
     while (tWrap.children.length > 2) tWrap.firstChild.remove();
     var t = d.createElement('div');
     var type = o.type || 'in';
@@ -230,7 +232,8 @@
     t.addEventListener('pointerup', end);
     t.addEventListener('pointercancel', end);
     if (type === 'er') vib(20);
-    return { hide: hide };
+    t._u = { msg: msg, hide: hide, gone: function () { return gone; }, again: function () { arm(); t.classList.remove('u-bump'); void t.offsetWidth; t.classList.add('u-bump'); } };
+    return t._u;
   }
 
   function seg(el, onChange) {

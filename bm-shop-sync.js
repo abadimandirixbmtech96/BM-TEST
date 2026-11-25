@@ -1,0 +1,477 @@
+(function () {
+  'use strict';
+
+  var SB_URL = 'https://uji-coba.invalid';
+  var SB_KEY = 'uji-coba-tanpa-kunci';
+  var K_CACHE = 'bm_shop_db_cache_v1';
+  var K_OUT = 'bm_shop_outbox_v1';
+  var K_REJ = 'bm_shop_rejected_v1';
+  var POLL_MS = 45000;
+
+  var app = null, client = null, userId = null;
+  var outbox = [], cache = null;
+  var mode = 'mulai';
+  var isAdmin = false, lastSync = 0, lastErr = '';
+  var flushing = false, pulling = false, commitSeq = 0, pendingData = null, started = false;
+
+  function ls(k, v) {
+    try {
+      if (v === undefined) { var s = localStorage.getItem(k); return s ? JSON.parse(s) : null; }
+      if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v));
+      return true;
+    } catch (e) { return v === undefined ? null : false; }
+  }
+  function uuid() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    var b = crypto.getRandomValues(new Uint8Array(16));
+    b[6] = (b[6] & 15) | 64; b[8] = (b[8] & 63) | 128;
+    var h = Array.prototype.map.call(b, function (x) { return (x + 256).toString(16).slice(1); }).join('');
+    return h.slice(0, 8) + '-' + h.slice(8, 12) + '-' + h.slice(12, 16) + '-' + h.slice(16, 20) + '-' + h.slice(20);
+  }
+  var J = function (o) { return JSON.stringify(o); };
+  var num = function (v) { return v == null || v === '' ? 0 : +v; };
+  function toast(m) { try { app && app.toast(m); } catch (e) {} }
+
+  function lineD(l) {
+    var o = { i: l.barang_id || null, name: l.nama, unit: l.satuan || 'pcs', q: num(l.qty), p: num(l.harga) };
+    if (l.modal != null) o.c = num(l.modal);
+    return o;
+  }
+  function toD(s) {
+    var items = (s.barang || []).map(function (x) {
+      return { id: x.id, kind: x.jenis || 'umum', base: x.nama_dasar || x.nama, a: x.atribut || {}, name: x.nama,
+        cat: x.kategori || '', unit: x.satuan || 'pcs', buy: num(x.harga_beli), sell: num(x.harga_jual),
+        min: num(x.stok_min), arch: !!x.arsip, codes: (x.kode || []).map(String), pc: x.kode_pabrik || '' };
+    });
+    var im = {}; items.forEach(function (x) { im[x.id] = x; });
+    var parties = (s.pihak || []).map(function (p) {
+      return { id: p.id, k: p.jenis === 'pemasok' ? 's' : 'c', name: p.nama, phone: p.telp || '', ts: Date.parse(p.created_at) || 0 };
+    });
+    var notas = (s.nota || []).map(function (n) {
+      return { id: n.id, no: n.nomor, kode: n.kode, t: n.tipe === 'beli' ? 'in' : 'out', d: n.tanggal, ts: num(n.urut),
+        partyId: n.pihak_id || null, lines: (n.baris || []).map(lineD), dp: num(n.uang_muka), note: n.catatan || '',
+        void: !!n.batal, src: n.sumber || 'kasir' };
+    });
+    var rets = (s.retur || []).map(function (r) {
+      return { id: r.id, notaId: r.nota_id, d: r.tanggal, ts: num(r.urut), lines: (r.baris || []).map(lineD),
+        refund: num(r.refund), note: r.catatan || '' };
+    });
+    var pays = (s.bayar || []).map(function (b) {
+      return { id: b.id, partyId: b.pihak_id, notaId: b.nota_id || null, a: num(b.jumlah), d: b.tanggal, ts: num(b.urut),
+        note: b.catatan || '', m: b.metode || 'tunai' };
+    });
+    var adj = (s.stok || []).map(function (a) {
+      var x = im[a.barang_id] || {};
+      return { id: a.id, i: a.barang_id, name: x.name || '', unit: x.unit || '', delta: num(a.delta),
+        c: a.modal == null ? null : num(a.modal), reason: a.alasan || '', d: a.tanggal, ts: num(a.urut), note: a.catatan || '' };
+    });
+    var seq = { out: 0, in: 0 };
+    notas.forEach(function (n) { if (n.src === 'kasir' && (n.no || 0) > seq[n.t]) seq[n.t] = n.no; });
+    var kinds = (s.jenis || []).map(function (j) {
+      return { id: j.kode, name: j.nama, unit: j.satuan || 'pcs', ts: num(j.urut) };
+    });
+    return { v: 2, items: items, parties: parties, notas: notas, rets: rets, pays: pays, adj: adj, seq: seq, kinds: kinds };
+  }
+
+  function itemRow(x) {
+    return { id: x.id, jenis: x.kind || 'umum', nama_dasar: x.base || x.name, atribut: x.a || {}, nama: x.name,
+      kategori: x.cat || '', satuan: x.unit || 'pcs', harga_jual: +x.sell || 0, harga_beli: +x.buy || 0,
+      stok_min: +x.min || 0, kode: (x.codes || []).map(String), kode_pabrik: x.pc || '', arsip: !!x.arch };
+  }
+  function kindRow(k) { return { kode: k.id, nama: String(k.name || '').trim(), satuan: k.unit || 'pcs', urut: +k.ts || 0 }; }
+  function partyRow(p) { return { id: p.id, jenis: p.k === 's' ? 'pemasok' : 'customer', nama: String(p.name || '').trim(), telp: p.phone || '' }; }
+  function lineRow(l) {
+    return { barang_id: l.i || null, nama: l.name, satuan: l.unit || 'pcs', qty: +l.q, harga: +l.p || 0, modal: l.c == null ? null : +l.c };
+  }
+  function notaHead(n) {
+    return { tanggal: n.d, pihak_id: n.partyId || null, uang_muka: +n.dp || 0, catatan: n.note || '', batal: !!n.void };
+  }
+  function notaRow(n) {
+    var h = notaHead(n);
+    h.id = n.id; h.tipe = n.t === 'in' ? 'beli' : 'jual'; h.urut = +n.ts || Date.now();
+    h.lines = (n.lines || []).map(lineRow);
+    return h;
+  }
+  function retRow(r) {
+    return { id: r.id, nota_id: r.notaId, tanggal: r.d, refund: +r.refund || 0, catatan: r.note || '', urut: +r.ts || Date.now(),
+      lines: (r.lines || []).map(lineRow) };
+  }
+  function payRow(p) {
+    return { id: p.id, pihak_id: p.partyId, nota_id: p.notaId || null, jumlah: +p.a, tanggal: p.d, metode: p.m || 'tunai',
+      catatan: p.note || '', urut: +p.ts || Date.now() };
+  }
+  function adjRow(a) {
+    return { id: a.id, barang_id: a.i, delta: +a.delta, modal: a.c == null ? null : +a.c, alasan: a.reason || '', tanggal: a.d,
+      catatan: a.note || '', urut: +a.ts || Date.now() };
+  }
+
+  function byId(a) { var m = {}; (a || []).forEach(function (x) { m[x.id] = x; }); return m; }
+  function diff(A, B) {
+    var ops = [], dels = [], baru = [];
+    var bad = function (m) { return { blocked: m }; };
+    var i, k;
+
+    var pA = byId(A.parties), pB = byId(B.parties);
+    for (k in pB) if (!pA[k] || J(partyRow(pA[k])) !== J(partyRow(pB[k]))) ops.push({ op: 'party_upsert', row: partyRow(pB[k]) });
+    for (k in pA) if (!pB[k]) dels.push({ op: 'party_delete', id: k, _o: 5 });
+
+    var kA = byId(A.kinds), kB = byId(B.kinds);
+    for (k in kB) if (!kA[k] || J(kindRow(kA[k])) !== J(kindRow(kB[k]))) ops.push({ op: 'kind_upsert', row: kindRow(kB[k]) });
+    for (k in kA) if (!kB[k]) dels.push({ op: 'kind_delete', id: k, _o: 6 });
+
+    var iA = byId(A.items), iB = byId(B.items);
+    for (k in iB) {
+      var rB = itemRow(iB[k]);
+      if (!iA[k]) { ops.push({ op: 'item_upsert', row: rB }); continue; }
+      var rA = itemRow(iA[k]), ub = Object.keys(rB).filter(function (f) { return f !== 'id' && J(rA[f]) !== J(rB[f]); });
+      if (ub.length) ops.push({ op: 'item_upsert', row: rB, ubah: ub });
+    }
+    for (k in iA) if (!iB[k]) dels.push({ op: 'item_delete', id: k, _o: 4 });
+
+    var nA = byId(A.notas), nB = byId(B.notas);
+    for (k in nA) if (!nB[k]) return bad('Nota tidak bisa dihapus, batalkan saja');
+    for (k in nB) {
+      var o = nA[k], n = nB[k];
+      if (!o) { ops.push({ op: 'nota_upsert', row: notaRow(n) }); baru.push(k); continue; }
+      var hd = J(notaHead(o)) !== J(notaHead(n));
+      var ld = J((o.lines || []).map(lineRow)) !== J((n.lines || []).map(lineRow));
+      if (!hd && !ld) continue;
+      if (o.src === 'bengkel') return bad('Salinan dari Hutang Piutang tidak bisa diubah di kasir');
+      ops.push({ op: 'nota_upsert', row: notaRow(n), ganti_baris: ld });
+    }
+
+    var rA = byId(A.rets), rB = byId(B.rets);
+    for (k in rB) {
+      if (!rA[k]) {
+        var nn = nB[rB[k].notaId];
+        if (nn && nn.src === 'bengkel') return bad('Salinan dari Hutang Piutang tidak bisa diretur di kasir');
+        ops.push({ op: 'ret_insert', row: retRow(rB[k]) });
+      } else if (J(retRow(rA[k])) !== J(retRow(rB[k]))) return bad('Retur yang sudah tersimpan tidak bisa diubah');
+    }
+    for (k in rA) if (!rB[k]) dels.push({ op: 'ret_delete', id: k, _o: 2 });
+
+    var yA = byId(A.pays), yB = byId(B.pays);
+    for (k in yB) {
+      if (!yA[k]) ops.push({ op: 'pay_insert', row: payRow(yB[k]) });
+      else if (J(payRow(yA[k])) !== J(payRow(yB[k]))) return bad('Pembayaran yang sudah tersimpan tidak bisa diubah');
+    }
+    for (k in yA) if (!yB[k]) dels.push({ op: 'pay_delete', id: k, _o: 1 });
+
+    var aA = byId(A.adj), aB = byId(B.adj);
+    for (k in aB) {
+      if (!aA[k]) ops.push({ op: 'adj_insert', row: adjRow(aB[k]) });
+      else if (J(adjRow(aA[k])) !== J(adjRow(aB[k]))) return bad('Penyesuaian stok yang sudah tersimpan tidak bisa diubah');
+    }
+    for (k in aA) if (!aB[k]) dels.push({ op: 'adj_delete', id: k, _o: 3 });
+
+    var ord = { kind_upsert: 0, party_upsert: 1, item_upsert: 2, nota_upsert: 3, ret_insert: 4, pay_insert: 5, adj_insert: 6 };
+    ops.sort(function (x, y) { return ord[x.op] - ord[y.op]; });
+    dels.sort(function (x, y) { return x._o - y._o; });
+    dels.forEach(function (d) { delete d._o; });
+    for (i = 0; i < dels.length; i++) ops.push(dels[i]);
+    return { ops: ops, baru: baru };
+  }
+
+  function saveOut() { ls(K_OUT, outbox); }
+  function saveCache(d) { cache = { v: 1, uid: userId, at: Date.now(), data: d }; ls(K_CACHE, cache); }
+  function myOut() { return outbox.filter(function (b) { return !b.uid || b.uid === userId; }); }
+
+  function classify(res) {
+    var e = res.error || {}, st = res.status || 0, code = String(e.code || '');
+    if (code === '42501') return 'akses';
+    if (st === 401 || /^PGRST30/.test(code) || /jwt/i.test(e.message || '')) return 'login';
+    if (st === 0 || st >= 500 || !code) return 'net';
+    return 'tolak';
+  }
+  function friendly(e) {
+    var m = String((e && e.message) || 'tidak diketahui'), c = String((e && e.code) || '');
+    if (c === '23505' && /pihak_nama_unik/.test(m)) return 'Nama pelanggan itu sudah ada';
+    if (c === '23505') return 'Data yang sama sudah ada';
+    if (c === '23503') return 'Data masih dipakai di nota, retur, atau pembayaran';
+    if (c === '23514') return 'Isian tidak valid';
+    return m;
+  }
+  function logReject(b, e) {
+    var arr = ls(K_REJ) || [];
+    arr.push({ at: new Date().toISOString(), uid: userId, batch: b, error: { code: e && e.code, message: e && e.message } });
+    if (arr.length > 50) arr = arr.slice(-50);
+    ls(K_REJ, arr);
+  }
+  function applyResult(data) {
+    var h = (data && data.hasil) || [];
+    if (!h.length || !app) return;
+    var D = app.get(), changed = false;
+    h.forEach(function (x) {
+      var n = D.notas.find(function (z) { return z.id === x.nota; });
+      if (n && (n.kode !== x.kode || n.no !== x.nomor)) { n.kode = x.kode; n.no = x.nomor; changed = true; }
+    });
+    if (changed) { app.set(D); saveCache(D); app.refresh(); }
+  }
+
+  async function flush() {
+    if (flushing || !client || !userId) return;
+    flushing = true; var ditolak = false;
+    try {
+      var list = myOut();
+      while (list.length) {
+        var b = list[0];
+        setMode('kirim');
+        var res = await client.rpc('shop_terapkan', { batch: { id: b.id, ops: b.ops } });
+        if (res.error) {
+          var kind = classify(res);
+          lastErr = friendly(res.error);
+          if (kind === 'net') { setMode('offline'); return; }
+          if (kind === 'login') { setMode('login'); return; }
+          if (kind === 'akses') { setMode('akses'); return; }
+          ditolak = true; logReject(b, res.error);
+          toast('Ditolak database: ' + lastErr);
+        } else {
+          applyResult(res.data);
+        }
+        outbox = outbox.filter(function (z) { return z.id !== b.id; }); saveOut();
+        list = myOut();
+      }
+      setMode('siap');
+    } finally {
+      flushing = false; badge();
+    }
+    if (ditolak) await pull(true);
+  }
+
+  async function pull(force) {
+    if (pulling || !client || !userId) return;
+    if (myOut().length) return flush();
+    pulling = true; var seq0 = commitSeq;
+    try {
+      var res = await client.rpc('shop_ambil_semua');
+      if (res.error) {
+        var kind = classify(res); lastErr = friendly(res.error);
+        setMode(kind === 'tolak' ? 'offline' : kind);
+        return;
+      }
+      var s = res.data || {};
+      isAdmin = !!s.admin;
+      if (!s.boleh) { setMode('akses'); return; }
+      lastSync = Date.now(); setMode('siap');
+      if (seq0 !== commitSeq || myOut().length) return;
+      var nd = toD(s), cur = app.get();
+      if (J(nd) === J(cur)) { saveCache(cur); return; }
+      if (!force && app.pages() > 0) { pendingData = nd; return; }
+      pendingData = null; app.set(nd); saveCache(nd); app.refresh();
+    } finally {
+      pulling = false; badge();
+    }
+  }
+
+  var badgeEl = null;
+  function setMode(m) {
+    var was = mode; mode = m; badge();
+    if (m === 'login' && was !== 'login' && was !== 'mulai') showLogin('Sesi berakhir. Masuk lagi agar data bisa disimpan.');
+  }
+
+  var loginEl = null;
+  function showLogin(msg) {
+    if (!client) { toast('Pustaka Supabase belum termuat. Periksa sinyal lalu buka ulang.'); return; }
+    if (!loginEl) {
+      var css = document.createElement('style');
+      css.textContent = '#bm-login{position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center;'
+        + 'background:rgba(0,0,0,.55);padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}'
+        + '#bm-login[hidden]{display:none}'
+        + '#bm-login form{width:100%;max-width:420px;background:var(--sf,#fff);color:var(--tx,#111);border:1px solid var(--bd,#ddd);'
+        + 'border-radius:20px;padding:20px;display:grid;gap:12px;font-family:inherit}'
+        + '#bm-login h2{margin:0;font-size:20px;font-weight:700;letter-spacing:-.01em}'
+        + '#bm-login .s{margin:0;color:var(--mu,#666);font-size:13px;line-height:1.45}'
+        + '#bm-login label{display:grid;gap:6px;font-size:13px;color:var(--mu,#666);font-weight:600}'
+        + '#bm-login input{height:48px;border-radius:12px;border:1px solid var(--bd,#ddd);background:var(--bg,#f4f4f2);color:var(--tx,#111);'
+        + 'padding:0 14px;font-family:inherit;font-size:16px;min-width:0}'
+        + '#bm-login input:focus{outline:2px solid var(--ac,#F4A81E);outline-offset:1px}'
+        + '#bm-login .m{margin:0;min-height:1.3em;color:var(--er,#dc2626);font-size:13px;line-height:1.4}'
+        + '#bm-login button{font-family:inherit;cursor:pointer}'
+        + '#bm-login .ok{height:50px;border:0;border-radius:999px;background:var(--ac,#F4A81E);color:#111;font-weight:700;font-size:16px}'
+        + '#bm-login .ok:disabled{opacity:.6;cursor:default}'
+        + '#bm-login .no{height:44px;background:none;border:0;color:var(--mu,#666);font-weight:600;font-size:14px}';
+      document.head.appendChild(css);
+      loginEl = document.createElement('div');
+      loginEl.id = 'bm-login'; loginEl.hidden = true;
+      loginEl.setAttribute('role', 'dialog'); loginEl.setAttribute('aria-modal', 'true'); loginEl.setAttribute('aria-labelledby', 'bm-login-t');
+
+      loginEl.innerHTML = '<form novalidate><h2 id="bm-login-t">Masuk dulu</h2>'
+        + '<p class="s">Masuk lewat Profil BM. Setelah itu Dashboard Warung, Dashboard, dan Jarvis langsung bisa dipakai tanpa login lagi.</p>'
+        + '<p class="m" role="alert"></p>'
+        + '<button type="submit" class="ok">Masuk di Profil BM</button>'
+        + '<button type="button" class="no">Nanti saja</button></form>';
+      document.body.appendChild(loginEl);
+      var f = loginEl.querySelector('form');
+      f.addEventListener('submit', function (ev) { ev.preventDefault(); (window.top || window).location.href = '/admin-login.html'; });
+      loginEl.querySelector('.no').addEventListener('click', hideLogin);
+      loginEl.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') hideLogin(); });
+    }
+    loginEl.querySelector('.m').textContent = msg || '';
+    loginEl.hidden = false;
+    setTimeout(function () { var b = loginEl.querySelector('.ok'); if (b) b.focus(); }, 50);
+  }
+  function hideLogin() { if (loginEl) loginEl.hidden = true; }
+  async function doLogin(email, pass) {
+    var f = loginEl.querySelector('form'), m = loginEl.querySelector('.m'), btn = loginEl.querySelector('.ok');
+    if (!email || !pass) { m.textContent = 'Isi email dan kata sandi.'; return; }
+    btn.disabled = true; btn.textContent = 'Memeriksa...'; m.textContent = '';
+    var gagal = function (t) { m.textContent = t; f.p.value = ''; btn.disabled = false; btn.textContent = 'Masuk'; f.p.focus(); };
+    try {
+      var r = await client.auth.signInWithPassword({ email: email, password: pass });
+      if (r.error || !r.data || !r.data.session) {
+        var e = r.error || {};
+        if (e.status === 0 || /fetch|network/i.test(e.message || '')) return gagal('Tidak ada sinyal. Coba lagi saat tersambung.');
+        return gagal('Email atau kata sandi salah, atau akun ini belum punya akses kasir.');
+      }
+      var b = await client.rpc('shop_boleh');
+      if (b.error) {
+        try { await client.auth.signOut(); } catch (x) {}
+        return gagal(classify(b) === 'net' ? 'Tidak ada sinyal. Coba lagi saat tersambung.' : 'Akses belum bisa diperiksa. Coba lagi.');
+      }
+      if (b.data !== true) {
+        try { await client.auth.signOut(); } catch (x) {}
+        return gagal('Email atau kata sandi salah, atau akun ini belum punya akses kasir.');
+      }
+      f.p.value = ''; btn.disabled = false; btn.textContent = 'Masuk';
+      hideLogin(); toast('Berhasil masuk');
+      await afterSession(r.data.session);
+    } catch (x) {
+      gagal('Tidak ada sinyal. Coba lagi saat tersambung.');
+    }
+  }
+  function statusText() {
+    var n = myOut().length;
+    switch (mode) {
+      case 'mulai': return 'Memuat data...';
+      case 'kirim': return 'Menyimpan ke database...';
+      case 'offline': return n ? 'Offline, ' + n + ' perubahan menunggu' : 'Offline, memakai data terakhir';
+      case 'login': return 'Belum masuk. Ketuk untuk masuk';
+      case 'akses': return 'Akun ini belum punya akses kasir';
+      default: return n ? n + ' perubahan menunggu' : 'Tersambung';
+    }
+  }
+  function shortText() {
+    var n = myOut().length;
+    switch (mode) {
+      case 'mulai': return 'Memuat';
+      case 'kirim': return 'Menyimpan';
+      case 'offline': return n ? 'Offline · ' + n : 'Offline';
+      case 'login': return 'Belum masuk';
+      case 'akses': return 'Tanpa akses';
+      default: return n ? n + ' menunggu' : 'Online';
+    }
+  }
+  function onBadge() {
+    if (mode === 'login') { showLogin(); return; }
+    if (mode === 'akses') { toast('Minta admin menambahkan akun ini ke daftar kasir'); return; }
+    toast(statusText()); syncNow();
+  }
+
+  function badge() {
+    if (!badgeEl) {
+      var css = document.createElement('style');
+      css.textContent = '.bm-sync{cursor:pointer;color:var(--acx,#9a5b00)}'
+        + '.bm-sync[data-m=login],.bm-sync[data-m=akses]{color:var(--er,#dc2626)}'
+        + '#bm-sync-f.fl{position:fixed;right:16px;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:60;height:30px;padding:0 12px;border-radius:999px;border:1px solid currentColor;background:var(--sf,#fff);font:700 12px system-ui,sans-serif}';
+      document.head.appendChild(css);
+      badgeEl = document.getElementById('bm-sync-f');
+      if (!badgeEl) {
+        badgeEl = document.createElement('button'); badgeEl.type = 'button'; badgeEl.id = 'bm-sync-f'; badgeEl.className = 'fl'; badgeEl.hidden = true;
+        document.body.appendChild(badgeEl);
+      }
+      badgeEl.classList.add('bm-sync');
+      badgeEl.setAttribute('aria-live', 'polite');
+      badgeEl.addEventListener('click', onBadge);
+    }
+    var n = myOut().length;
+    var perlu = mode === 'login' || mode === 'akses' || n > 0;
+    badgeEl.hidden = !perlu;
+    badgeEl.dataset.m = mode;
+    badgeEl.textContent = n > 0 && mode !== 'login' && mode !== 'akses' ? n + ' belum terkirim' : shortText();
+    badgeEl.title = statusText();
+    badgeEl.setAttribute('aria-label', 'Status database: ' + statusText());
+  }
+
+  function syncNow() {
+    if (!client) return;
+    if (myOut().length) flush(); else pull();
+  }
+
+  window.BMShopSync = {
+    version: 'shop-sync-v3-2026-11-12',
+    peek: async function () {
+      if (!client || !userId || mode === 'offline') return null;
+      try {
+        var res = await client.rpc('shop_ambil_semua');
+        if (res.error || !res.data || !res.data.boleh) return null;
+        return toD(res.data);
+      } catch (e) { return null; }
+    },
+    cached: function () {
+      cache = ls(K_CACHE); outbox = ls(K_OUT) || [];
+      return cache && cache.data ? cache.data : null;
+    },
+    commit: function (prev, next) {
+      if (mode === 'login') { toast('Masuk dulu agar data bisa disimpan'); return false; }
+      if (mode === 'akses') { toast('Akun ini belum punya akses kasir'); return false; }
+      if (mode === 'mulai' && !cache) { toast('Data masih dimuat, coba lagi sebentar'); return false; }
+      var d = diff(prev, next);
+      if (d.blocked) { toast(d.blocked); return false; }
+      if (!d.ops.length) return true;
+      d.baru.forEach(function (id) {
+        var n = next.notas.find(function (z) { return z.id === id; });
+        if (n) { n.no = null; n.kode = null; n.src = 'kasir'; }
+      });
+      commitSeq++;
+      outbox.push({ id: uuid(), uid: userId, at: Date.now(), ops: d.ops });
+      saveOut();
+      return true;
+    },
+    saved: function (D) { saveCache(D); badge(); setTimeout(flush, 0); },
+    start: function (bridge) {
+      if (started) return; started = true; app = bridge;
+      badge();
+      window.addEventListener('online', syncNow);
+      window.addEventListener('offline', function () { setMode('offline'); });
+      document.addEventListener('visibilitychange', function () { if (!document.hidden) syncNow(); });
+      window.addEventListener('bm:refresh', function (e) { e.preventDefault(); syncNow(); });
+      setInterval(function () {
+        if (document.hidden) return;
+        if (pendingData && app.pages() === 0 && !myOut().length) {
+          var nd = pendingData; pendingData = null; app.set(nd); saveCache(nd); app.refresh(); return;
+        }
+        syncNow();
+      }, POLL_MS);
+      init();
+    },
+    status: function () {
+      return { mode: mode, text: statusText(), pending: myOut().length, admin: isAdmin, lastSync: lastSync, error: lastErr };
+    },
+    syncNow: syncNow,
+    uuid: uuid,
+    _diff: diff, _toD: toD
+  };
+
+  async function init() {
+    if (!window.supabase || !supabase.createClient) { setMode('offline'); lastErr = 'Pustaka Supabase belum termuat'; return; }
+    client = supabase.createClient(SB_URL, SB_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true, storage: window.localStorage, storageKey: 'bmtech-auth' }
+    });
+    var r = await client.auth.getSession();
+    var session = r && r.data && r.data.session;
+    if (!session) { setMode('login'); showLogin(); return; }
+    await afterSession(session);
+  }
+
+  async function afterSession(session) {
+    userId = session.user && session.user.id;
+    try { if (window.BMJarvis && window.BMJarvis.refresh) setTimeout(window.BMJarvis.refresh, 300); } catch (e) {}
+    if (cache && cache.uid && cache.uid !== userId) {
+      cache = null; ls(K_CACHE, null);
+      app.set(app.blank()); app.refresh();
+    }
+    if (!navigator.onLine) { setMode('offline'); return; }
+    if (myOut().length) await flush();
+    await pull(true);
+  }
+})();

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Folder Baru</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#F6F1E7;--card:#FBF8F2;--ink:#1C1B19;--soft:#6B6459;--line:#E4DDCC;--accent:#F0A529;--on-accent:#1C1B19;--danger:#C24444;--r:16px}
+  html.dark{--paper:#15140F;--card:#1E1D17;--ink:#EDEAE2;--soft:#9B948A;--line:#332F27;--accent:#F0A529;--on-accent:#1C1B19}
+  *{box-sizing:border-box;font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  body.font-serif *{font-family:Georgia,'Times New Roman',Times,serif!important}
+  body.font-mono *{font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace!important}
+  body.font-rounded *{font-family:ui-rounded,'SF Pro Rounded','Baloo 2','Segoe UI',sans-serif!important}
+  body.font-klasik *{font-family:'Times New Roman',Times,Georgia,serif!important}
+  body.font-humanis *{font-family:Verdana,Tahoma,Geneva,sans-serif!important}
+  body.font-kompak *{font-family:'Arial Narrow','Segoe UI',Arial,sans-serif!important}
+  body.font-custom *{font-family:'BMCustom','Inter',sans-serif!important}
+  body.font-bold-mode *{font-weight:700!important}
+  html,body{margin:0;min-height:100%;background:var(--paper);color:var(--ink)}
+  .top{display:flex;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 6px}
+  .back{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:22px;cursor:pointer}
+  .top h2{margin:0;font-size:21px;font-weight:800}
+  main{padding:4px 16px calc(env(safe-area-inset-bottom,0px) + 40px);max-width:560px;margin:0 auto}
+  .step{display:flex;align-items:center;gap:10px;margin:26px 0 4px;font-weight:800;font-size:16px}
+  .step i{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--on-accent);font-style:normal;font-size:13px}
+  .sub{font-size:13px;color:var(--soft);margin:0 0 12px 36px;line-height:1.4}
+  input[type=text],select{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:var(--r);background:var(--card);color:var(--ink);font-size:16px;outline:none}
+  input[type=text]:focus,select:focus{border-color:var(--accent)}
+  .swatches{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  .sw{width:34px;height:34px;border-radius:50%;border:3px solid transparent;cursor:pointer;box-shadow:0 0 0 1px var(--line)}
+  .sw.on{border-color:var(--ink)}
+  .trow{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;margin-bottom:8px}
+  .trow b{font-size:15px}.trow small{display:block;color:var(--soft);font-size:12px;margin-top:2px}
+  .seg{display:flex;gap:4px;background:var(--paper);border-radius:12px;padding:3px;flex-shrink:0}
+  .seg button{padding:8px 11px;border:0;border-radius:9px;background:transparent;color:var(--soft);font-size:13px;font-weight:700;cursor:pointer}
+  .seg button.on{background:var(--accent);color:var(--on-accent)}
+  .quick{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+  .chip{padding:8px 13px;border-radius:999px;border:1.5px dashed var(--accent);background:transparent;color:var(--ink);font-size:13px;font-weight:700;cursor:pointer}
+  .col{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:10px;margin-bottom:8px}
+  .col.off{opacity:.5}
+  .row{display:flex;gap:8px}.row .c-label{flex:1.4;min-width:0}.row .c-type{flex:1;min-width:0}
+  .col input[type=text],.col select{padding:11px 12px;font-size:15px}
+  .x{border:0;background:transparent;color:var(--danger);font-size:22px;line-height:1;padding:0 6px;cursor:pointer}
+  .opts{margin-top:8px}
+  .more{display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap}
+  .lnk{border:0;background:transparent;color:var(--soft);font-size:12.5px;font-weight:700;padding:4px 2px;cursor:pointer}
+  .ib{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:10px;padding:6px 11px;font-size:13px;cursor:pointer}
+  .chk{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;margin-right:auto}
+  .add{width:100%;padding:13px;border-radius:var(--r);border:1.5px dashed var(--line);background:transparent;color:var(--ink);font-weight:700;font-size:15px;cursor:pointer}
+  .save{width:100%;margin-top:26px;padding:16px;border:0;border-radius:var(--r);background:var(--accent);color:var(--on-accent);font-size:17px;font-weight:800;cursor:pointer}
+  .save:disabled{opacity:.6}
+  .err{display:none;margin-top:14px;padding:12px 14px;border-radius:var(--r);background:rgba(194,68,68,.12);color:var(--danger);font-size:14px;font-weight:600}
+  .msg{padding:40px 16px;text-align:center;color:var(--soft)}
+</style>
+<meta name="theme-color" content="#15140F">
+<script src="/bm-theme.js"></script>
+<script src="/bm-lang.js"></script>
+<script>(function(){try{var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=localStorage.getItem('bm-theme')==='light'?'#F6F1E7':'#15140F';}catch(e){}})();</script>
+</head>
+<body>
+<div class="top">
+  <button class="back" id="btnBack" aria-label="Kembali">&#8249;</button>
+  <h2 id="ttl">Folder Baru</h2>
+</div>
+<main id="app">
+  <div class="step"><i>1</i>Nama dan warna folder</div>
+  <p class="sub">Nama ini yang tampil di daftar folder.</p>
+  <input type="text" id="fName" placeholder="Contoh: Buku Servis" autocomplete="off" maxlength="40">
+  <div class="swatches" id="sws"></div>
+
+  <div class="step"><i>2</i>Nomor, Tanggal, dan Jam</div>
+  <p class="sub">Pilih <b>Otomatis</b> kalau mau terisi sendiri oleh sistem, atau <b>Isi sendiri</b> kalau mau kamu ketik/atur sendiri.</p>
+  <div class="trow"><span><b>Nomor</b><small>001, 002, 003, ...</small></span><div class="seg" data-k="no"><button type="button" data-v="1">Otomatis</button><button type="button" data-v="0">Isi sendiri</button></div></div>
+  <div class="trow"><span><b>Tanggal</b><small>Tanggal hari ini</small></span><div class="seg" data-k="tanggal"><button type="button" data-v="1">Otomatis</button><button type="button" data-v="0">Isi sendiri</button></div></div>
+  <div class="trow"><span><b>Jam</b><small>Jam saat disimpan</small></span><div class="seg" data-k="jam"><button type="button" data-v="1">Otomatis</button><button type="button" data-v="0">Isi sendiri</button></div></div>
+
+  <div class="step"><i>3</i>Apa saja yang mau dicatat?</div>
+  <p class="sub">Tiap baris = 1 isian di form. Beri nama, lalu pilih jenisnya.</p>
+  <div class="quick">
+    <button type="button" class="chip" data-q="PJ">+ PJ</button>
+    <button type="button" class="chip" data-q="Customer">+ Customer</button>
+  </div>
+  <div id="cols"></div>
+  <button type="button" class="add" id="btnAdd">+ Tambah isian</button>
+
+  <div class="err" id="err"></div>
+  <button class="save" id="btnSave">Simpan Folder</button>
+</main>
+
+<script src="/bm-mock.js"></script>
+<script src="/bm-app.js"></script>
+<script>
+  const supabaseClient = supabase.createClient('https://uji-coba.invalid', 'uji-coba-tanpa-kunci', {
+    auth: { persistSession: true, autoRefreshToken: true, storage: window.localStorage, storageKey: 'bmtech-auth' }
+  });
+
+  if (localStorage.getItem('bm-theme') !== 'light') document.documentElement.classList.add('dark');
+  const FONTS = { serif: 'font-serif', klasik: 'font-klasik', humanis: 'font-humanis', kompak: 'font-kompak', mono: 'font-mono', rounded: 'font-rounded', custom: 'font-custom' };
+  const savedFont = localStorage.getItem('bm-font');
+  if (savedFont && FONTS[savedFont]) document.body.classList.add(FONTS[savedFont]);
+  if (localStorage.getItem('bm-font-bold') === 'on') document.body.classList.add('font-bold-mode');
+  if (savedFont === 'custom' && window.BMTheme) window.BMTheme.ensureCustom();
+
+  (async function guard() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) { window.top.location.href = 'admin-login.html'; return; }
+    const { data: isAdmin, error } = await supabaseClient.rpc('is_admin');
+    if (error) return;
+    if (!isAdmin) { await supabaseClient.auth.signOut(); window.top.location.href = 'admin-login.html'; }
+  })();
+
+  const COLORS = ['#8B5CF6', '#D6409F', '#E2683C', '#0EA5A4', '#6366F1', '#E5546B', '#84A12B', '#A0643A'];
+  const TYPES = [['text', 'Teks'], ['long', 'Teks panjang'], ['number', 'Angka'], ['money', 'Uang (Rp)'], ['date', 'Tanggal'], ['select', 'Pilihan'], ['image', 'Foto']];
+  const RESERVED = ['no', 'nomor', 'tanggal', 'jam', 'waktu'];
+  
+  const editId = new URLSearchParams(location.search).get('id');
+  let color = COLORS[0], auto = { no: true, tanggal: true, jam: true }, cols = [], otherNames = [];
+
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const key = s => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const uid = () => 'c_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+
+  function close() {
+    if (window.parent !== window) window.parent.postMessage('close-editor', '*');
+    else location.href = 'dashboard-admin.html';
+  }
+  $('btnBack').onclick = close;
+
+  function addCol(label, type, required) {
+    const blank = label && cols.find(c => c.isNew && !c.hidden && !c.label.trim());
+    if (blank) { blank.label = label; blank.type = type || 'text'; blank.required = !!required; return; }
+    cols.push({ id: uid(), label: label || '', type: type || 'text', required: !!required, options: [], isNew: true });
+  }
+
+  function renderSwatches() {
+    $('sws').innerHTML = COLORS.map(c => `<div class="sw ${c === color ? 'on' : ''}" data-c="${c}" style="background:${c}"></div>`).join('');
+  }
+  function renderSeg() {
+    document.querySelectorAll('.seg').forEach(g => g.querySelectorAll('button').forEach(b => b.classList.toggle('on', (b.dataset.v === '1') === auto[g.dataset.k])));
+  }
+  function renderCols() {
+    $('cols').innerHTML = cols.map((c, i) => `
+      <div class="col ${c.hidden ? 'off' : ''}" data-i="${i}">
+        <div class="row">
+          <input type="text" class="c-label" placeholder="Nama isian" value="${esc(c.label)}" maxlength="30" ${c.hidden ? 'disabled' : ''}>
+          <select class="c-type" ${c.hidden ? 'disabled' : ''}>${TYPES.map(t => `<option value="${t[0]}" ${t[0] === c.type ? 'selected' : ''}>${t[1]}</option>`).join('')}</select>
+          ${c.hidden ? '' : `<button type="button" class="x" data-a="del" aria-label="${c.isNew ? 'Hapus' : 'Sembunyikan'}">&times;</button>`}
+        </div>
+        ${c.type === 'select' && !c.hidden ? `<div class="opts"><input type="text" class="c-opts" placeholder="Pilihan, pisahkan dengan koma. Contoh: Lunas, Belum" value="${esc((c.options || []).join(', '))}"></div>` : ''}
+        ${c.hidden ? '<div class="more"><button type="button" class="ib" data-a="show">Tampilkan lagi</button></div>' : `
+        <div class="more">${c.open ? `
+          <label class="chk"><input type="checkbox" class="c-req" ${c.required ? 'checked' : ''}> Wajib diisi</label>
+          <button type="button" class="ib" data-a="up">&uarr;</button><button type="button" class="ib" data-a="down">&darr;</button>` : ''}
+          <button type="button" class="lnk" data-a="more">${c.open ? 'Tutup' : 'Lainnya' + (c.required ? ' (wajib)' : '')}</button>
+        </div>`}
+      </div>`).join('');
+  }
+  function renderAll() { renderSwatches(); renderSeg(); renderCols(); }
+
+  $('sws').addEventListener('click', e => { const s = e.target.closest('.sw'); if (s) { color = s.dataset.c; renderSwatches(); } });
+  document.querySelectorAll('.seg').forEach(g => g.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { auto[g.dataset.k] = b.dataset.v === '1'; renderSeg(); } }));
+  $('btnAdd').onclick = () => { cols.push({ id: uid(), label: '', type: 'text', required: false, options: [], isNew: true }); renderCols(); const l = document.querySelectorAll('.c-label'); l[l.length - 1].focus(); };
+
+  document.querySelector('.quick').addEventListener('click', e => {
+    const q = e.target.closest('[data-q]'); if (!q) return;
+    const v = q.dataset.q;
+    if (!cols.some(c => !c.hidden && key(c.label) === key(v))) addCol(v, 'text', v === 'PJ');
+    renderCols();
+  });
+
+  $('cols').addEventListener('input', e => {
+    const card = e.target.closest('.col'); if (!card) return;
+    const c = cols[+card.dataset.i];
+    if (e.target.classList.contains('c-label')) c.label = e.target.value;
+    else if (e.target.classList.contains('c-opts')) c.options = e.target.value.split(',').map(s => s.trim()).filter(Boolean);
+    else if (e.target.classList.contains('c-req')) c.required = e.target.checked;
+  });
+  $('cols').addEventListener('change', e => {
+    if (!e.target.classList.contains('c-type')) return;
+    cols[+e.target.closest('.col').dataset.i].type = e.target.value; renderCols();
+  });
+  $('cols').addEventListener('click', e => {
+    const b = e.target.closest('[data-a]'); if (!b) return;
+    const i = +b.closest('.col').dataset.i, a = b.dataset.a;
+    if (a === 'up' && i > 0) [cols[i - 1], cols[i]] = [cols[i], cols[i - 1]];
+    else if (a === 'down' && i < cols.length - 1) [cols[i + 1], cols[i]] = [cols[i], cols[i + 1]];
+    else if (a === 'del') { if (cols[i].isNew) cols.splice(i, 1); else cols[i].hidden = true; }
+    else if (a === 'show') cols[i].hidden = false;
+    else if (a === 'more') cols[i].open = !cols[i].open;
+    renderCols();
+  });
+
+  function showErr(m) { const el = $('err'); el.textContent = m; el.style.display = m ? 'block' : 'none'; if (m) el.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+
+  function validate(name) {
+    if (!name) return 'Nama folder wajib diisi.';
+    if (otherNames.includes(key(name))) return 'Nama folder "' + name + '" sudah dipakai.';
+    const active = cols.filter(c => !c.hidden);
+    if (!active.length) return 'Tambahkan minimal 1 isian.';
+    const seen = new Set();
+    for (const c of active) {
+      const k = key(c.label);
+      if (!k) return 'Ada isian yang namanya masih kosong.';
+      if (RESERVED.includes(k)) return 'Nama "' + c.label + '" sudah dipakai sistem (Nomor/Tanggal/Jam). Pakai nama lain.';
+      if (seen.has(k)) return 'Nama isian "' + c.label + '" dobel.';
+      seen.add(k);
+      if (c.type === 'select' && (c.options || []).length < 2) return 'Isian "' + c.label + '" butuh minimal 2 pilihan.';
+    }
+    return '';
+  }
+
+  $('btnSave').onclick = async () => {
+    const name = $('fName').value.trim();
+    const before = cols.length;
+    cols = cols.filter(c => !(c.isNew && !c.hidden && !c.label.trim()));
+    if (cols.length !== before) renderCols();
+    const bad = validate(name);
+    showErr(bad); if (bad) return;
+    const schema = {
+      v: 1, auto,
+      columns: cols.filter(c => c.hidden || c.label.trim()).map(c => {
+        const o = { id: c.id, label: c.label.trim(), type: c.type, required: !!c.required };
+        if (c.type === 'select') o.options = c.options || [];
+        if (c.hidden) o.hidden = true;
+        return o;
+      })
+    };
+    $('btnSave').disabled = true; $('btnSave').textContent = 'Menyimpan...';
+    const q = supabaseClient.from('folders');
+    const { error } = editId ? await q.update({ name, color, schema }).eq('id', editId) : await q.insert({ name, color, schema });
+    if (error) { showErr('Gagal menyimpan: ' + error.message); $('btnSave').disabled = false; $('btnSave').textContent = 'Simpan Folder'; return; }
+    close();
+  };
+
+  (async function init() {
+    const { data: all, error: e1 } = await supabaseClient.from('folders').select('id, name');
+    if (e1) { $('app').innerHTML = '<div class="msg">Gagal memuat data — cek koneksi lalu buka ulang.</div>'; return; }
+    otherNames = (all || []).filter(f => f.id !== editId).map(f => key(f.name));
+    ['amin', 'bm', 'mail', 'kuswanto', 'yono'].forEach(n => otherNames.push(n));
+
+    if (editId) {
+      $('ttl').textContent = 'Edit Folder';
+      const { data: f, error } = await supabaseClient.from('folders').select('*').eq('id', editId).single();
+      if (error || !f) { $('app').innerHTML = '<div class="msg">Folder tidak ditemukan.</div>'; return; }
+      if (!f.schema || !Array.isArray(f.schema.columns)) { $('app').innerHTML = '<div class="msg">Folder ini bersifat permanen dan tidak bisa diedit di sini.</div>'; return; }
+      $('fName').value = f.name; color = f.color || color; auto = f.schema.auto ? { no: f.schema.auto.no !== false, tanggal: f.schema.auto.tanggal !== false, jam: f.schema.auto.jam !== false } : (f.schema.timeMode === 'manual' ? { no: true, tanggal: false, jam: false } : auto);
+      cols = f.schema.columns.map(c => ({ ...c, isNew: false }));
+      if (!COLORS.includes(color)) COLORS.push(color);
+    } else {
+      addCol('', 'text', false);
+    }
+    renderAll();
+  })();
+</script>
+<script src="/bm-swipe-back.js" defer></script>
+<script src="/bm-jarvis.js" defer></script>
+</body>
+</html>
