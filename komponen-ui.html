@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#0e0e0e">
+<title>BM TECH UJICOBA</title>
+<link rel="preload" href="/fonts/instrument-sans-400.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="/fonts/instrument-sans-700.woff" as="font" type="font/woff" crossorigin>
+<script src="/bm-ui.js"></script>
+<link rel="stylesheet" href="/bm-ui.css">
+<style>
+.v[hidden]{display:none!important}
+.uji{display:inline-flex;align-items:center;height:20px;padding:0 7px;margin-left:6px;border-radius:6px;background:var(--u-wn-bg);color:var(--u-wn);font-size:10px;font-weight:700;letter-spacing:.05em;vertical-align:3px}
+.wpick .u-r{min-height:64px}
+.wsel{margin-top:8px}
+.wsel .u-r{min-height:60px}
+.tot{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px}
+.camp{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.cdl b.u-rp{font-size:var(--u-f4)}
+.cdl .u-mt{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:6px;font-size:var(--u-f1);color:var(--u-mu)}
+.cdl .u-tp{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.cdl .u-tp b{font-size:var(--u-f3)}
+.cdl{cursor:pointer;transition:transform var(--u-d2) var(--u-spring),background var(--u-d2)}
+.cdl:active{transform:scale(.985);background:var(--u-act)}
+.sw-r{display:flex;align-items:center;gap:12px}
+</style>
+</head>
+<body class="u-app">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M8 7h7M8 11h5"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+<symbol id="i-store" viewBox="0 0 24 24"><path d="M3 9l1.5-5h15L21 9M3 9h18v2a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0zM5 13v8h14v-8"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+<symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+<symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 20a2 2 0 0 0 4 0"/></symbol>
+<symbol id="i-cash" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 10v4M18 10v4"/></symbol>
+<symbol id="i-wallet" viewBox="0 0 24 24"><path d="M20 7V5a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V6"/><path d="M17 13h.01"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6 6 0 0 1 3.5 5.5"/></symbol>
+<symbol id="i-img" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01"/></symbol>
+<symbol id="i-bot" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="12" rx="4"/><path d="M12 4v4M9 13h.01M15 13h.01M9 17h6"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+<symbol id="i-half" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16" /></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></symbol>
+<symbol id="i-box" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+</svg>
+
+<section class="v" id="vHome">
+<header class="u-hd">
+<div><p class="u-ey">BM TECH<span class="uji">UJICOBA</span></p><h1 class="u-h1">Beranda</h1></div>
+<div class="u-hda"><button class="u-ib" type="button" aria-label="Notifikasi" id="bNot"><svg class="u-ic"><use href="#i-bell"/></svg><i class="u-dot"></i></button><button class="u-ib" type="button" aria-label="Ganti tema" data-theme-toggle><svg class="u-ic"><use href="#i-sun"/></svg></button></div>
+</header>
+<main class="u-main">
+<p class="u-ey" id="tgl" style="margin:0 2px 12px"></p>
+<div class="u-grid" id="stats">
+<div class="u-st u-tap"><small>Pemasukan hari ini</small><b class="u-rp" data-rp="2350000"></b><span class="u-dl u-ok">+12% dari kemarin</span></div>
+<div class="u-st u-tap"><small>Transaksi</small><b>14</b><span class="u-dl u-mu">3 belum lunas</span></div>
+<div class="u-st u-tap"><small>Data belum lengkap</small><b class="u-er">5</b><span class="u-dl u-mu">Ketuk untuk cek</span></div>
+<div class="u-st u-tap"><small>Total hutang</small><b class="u-rp" data-rp="1875000"></b><span class="u-dl u-mu">7 customer</span></div>
+</div>
+<h2 class="u-gl">Pintasan</h2>
+<div class="u-scs">
+<a class="u-sc" href="#" data-go="form"><span class="u-sci"><svg class="u-ic"><use href="#i-plus"/></svg></span><span class="u-scl">Tambah data</span></a>
+<a class="u-sc" href="#" data-go="cat"><span class="u-sci"><svg class="u-ic"><use href="#i-book"/></svg><i>5</i></span><span class="u-scl">Buku Besar</span></a>
+<a class="u-sc" href="#" data-toast="Membuka Warung"><span class="u-sci"><svg class="u-ic"><use href="#i-store"/></svg></span><span class="u-scl">Warung</span></a>
+<a class="u-sc" href="#" data-toast="Membuka Kasbon"><span class="u-sci"><svg class="u-ic"><use href="#i-wallet"/></svg></span><span class="u-scl">Kasbon</span></a>
+<a class="u-sc" href="#" data-toast="Membuka Operasional"><span class="u-sci"><svg class="u-ic"><use href="#i-cash"/></svg></span><span class="u-scl">Operasional</span></a>
+<a class="u-sc" href="#" data-toast="Membuka Jarvis"><span class="u-sci"><svg class="u-ic"><use href="#i-bot"/></svg></span><span class="u-scl">Jarvis</span></a>
+</div>
+<h2 class="u-gl">Transaksi terakhir <button class="u-lk" type="button" data-go="cat">Lihat semua</button></h2>
+<div class="u-grp" id="lastList"></div>
+</main>
+</section>
+
+<section class="v" id="vCat" hidden>
+<header class="u-hd">
+<div><p class="u-ey">Buku Besar</p><h1 class="u-h1">Catatan</h1></div>
+<div class="u-hda"><button class="u-ib" type="button" aria-label="Ganti tema" data-theme-toggle><svg class="u-ic"><use href="#i-sun"/></svg></button></div>
+</header>
+<main class="u-main">
+<label class="u-srch" id="srch"><svg class="u-ic"><use href="#i-search"/></svg><input class="u-in" type="search" placeholder="Cari nama, barang, tanggal" enterkeyhint="search" aria-label="Cari"><button class="u-x" type="button" aria-label="Hapus pencarian"><svg class="u-ic"><use href="#i-x"/></svg></button></label>
+<div class="u-chips" id="fChips">
+<button class="u-chip on" type="button" data-f="all">Semua <span class="u-cn" data-c="all"></span></button>
+<button class="u-chip" type="button" data-f="belum">Belum <span class="u-cn" data-c="belum"></span></button>
+<button class="u-chip" type="button" data-f="sebagian">Sebagian <span class="u-cn" data-c="sebagian"></span></button>
+<button class="u-chip" type="button" data-f="lunas">Lunas <span class="u-cn" data-c="lunas"></span></button>
+</div>
+<div class="u-seg" id="viewSeg" style="margin-top:12px"><button data-v="kartu" class="on">Kartu</button><button data-v="tabel">Tabel</button></div>
+<p class="u-cnt" id="cnt"></p>
+<div id="catList"></div>
+</main>
+<button class="u-fab" type="button" id="fab" data-go="form"><svg class="u-ic"><use href="#i-plus"/></svg>Data</button>
+</section>
+
+<section class="v" id="vAna" hidden>
+<header class="u-hd">
+<div><p class="u-ey">Keuangan</p><h1 class="u-h1">Analisa</h1></div>
+<div class="u-hda"><button class="u-ib" type="button" aria-label="Pilih tanggal" id="bCal"><svg class="u-ic"><use href="#i-cal"/></svg></button></div>
+</header>
+<main class="u-main">
+<div class="u-seg" id="perSeg"><button data-v="d" class="on">Hari ini</button><button data-v="w">Pekan</button><button data-v="m">Bulan</button><button data-v="y">Tahun</button></div>
+<div class="u-hero" id="hero"></div>
+<div class="u-dots" id="dots"></div>
+<h2 class="u-gl">Rincian <span class="u-lk" id="heroName"></span></h2>
+<div class="u-cd" id="rinci"></div>
+<h2 class="u-gl">Pemasukan per PJ</h2>
+<div class="u-cd"><div class="u-bars" id="bars"></div></div>
+</main>
+</section>
+
+<section class="v" id="vMore" hidden>
+<header class="u-hd">
+<div><p class="u-ey">BM TECH</p><h1 class="u-h1">Lainnya</h1></div>
+</header>
+<main class="u-main">
+<div class="u-banner"><svg class="u-ic"><use href="#i-alert"/></svg><div><b>Mode uji coba</b>Semua data di halaman ini contoh. Tidak tersambung ke database asli.</div></div>
+<h2 class="u-gl">Aplikasi</h2>
+<div class="u-grp">
+<a class="u-r" href="#" data-toast="Membuka Galeri"><span class="u-bx u-blu"><svg class="u-ic"><use href="#i-img"/></svg></span><span class="u-rm"><b>Galeri Bukti</b><small>Foto bukti transaksi</small></span><svg class="u-ic u-chev"><use href="#i-chev"/></svg></a>
+<a class="u-r" href="#" data-toast="Membuka Rekap gaji"><span class="u-bx u-grn"><svg class="u-ic"><use href="#i-users"/></svg></span><span class="u-rm"><b>Rekap Gaji</b><small>Kamis sampai Rabu</small></span><svg class="u-ic u-chev"><use href="#i-chev"/></svg></a>
+<a class="u-r" href="#" data-toast="Membuka Nomor HP"><span class="u-bx u-pur"><svg class="u-ic"><use href="#i-phone"/></svg></span><span class="u-rm"><b>Nomor HP</b><small>Customer dan pemasok</small></span><svg class="u-ic u-chev"><use href="#i-chev"/></svg></a>
+<a class="u-r" href="#" data-toast="Membuka Panduan"><span class="u-bx u-n"><svg class="u-ic"><use href="#i-help"/></svg></span><span class="u-rm"><b>Panduan</b></span><svg class="u-ic u-chev"><use href="#i-chev"/></svg></a>
+</div>
+<h2 class="u-gl">Pengaturan</h2>
+<div class="u-grp">
+<label class="u-r"><span class="u-bx u-n"><svg class="u-ic"><use href="#i-sun"/></svg></span><span class="u-rm"><b>Tema terang</b><small>Tersimpan di HP ini</small></span><input type="checkbox" class="u-sw" id="swTheme"></label>
+<div class="u-r" style="flex-wrap:wrap"><span class="u-rm" style="flex-basis:100%"><b>Animasi</b><small>Ikuti HP memakai pengaturan "hapus animasi" di Android</small></span><div class="u-seg" id="moSeg" style="flex:1"><button data-v="on">Hidup</button><button data-v="auto">Ikuti HP</button><button data-v="off">Mati</button></div></div>
+</div>
+<h2 class="u-gl">Contoh lain</h2>
+<div class="u-grp">
+<button class="u-r" type="button" id="bDel"><span class="u-bx u-red"><svg class="u-ic"><use href="#i-trash"/></svg></span><span class="u-rm"><b>Contoh konfirmasi hapus</b><small>Dialog dengan tombol merah</small></span></button>
+<button class="u-r" type="button" id="bErr"><span class="u-bx u-red"><svg class="u-ic"><use href="#i-alert"/></svg></span><span class="u-rm"><b>Contoh pesan gagal</b><small>Toast merah, bisa digeser untuk ditutup</small></span></button>
+<button class="u-r" type="button" id="bSkl"><span class="u-bx u-n"><svg class="u-ic"><use href="#i-clock"/></svg></span><span class="u-rm"><b>Contoh memuat data</b><small>Kerangka abu-abu saat sinyal lambat</small></span></button>
+</div>
+<div id="sklBox" style="margin-top:10px"></div>
+<div class="u-grp" style="margin-top:10px"><div class="u-em"><span class="u-emi"><svg class="u-ic lg"><use href="#i-box"/></svg></span><b>Contoh kosong</b><p>Belum ada data di tanggal ini.</p><button class="u-bt u-sm" type="button" data-go="form"><svg class="u-ic sm"><use href="#i-plus"/></svg>Tambah data</button></div></div>
+</main>
+</section>
+
+<section class="v" id="vForm" hidden>
+<div class="u-top" id="formTop"><button class="u-ib u-gh" type="button" aria-label="Kembali" id="fBack"><svg class="u-ic"><use href="#i-back"/></svg></button><div class="u-tt">Tambah data<small>Buku Besar</small></div></div>
+<main class="u-main u-hasbar">
+<div class="u-row2">
+<label class="u-fld"><span>PJ</span><select class="u-in" id="fPj"><option value="">Pilih</option><option>Amin</option><option>Mail</option><option>Yono</option><option>Kuswanto</option></select></label>
+<label class="u-fld"><span>Customer</span><input class="u-in" id="fCust" type="text" autocapitalize="words" enterkeyhint="next" autocomplete="off" placeholder="Nama"></label>
+</div>
+<div id="custMsg"></div>
+<label class="u-fld"><span>Barang dan jumlah</span><textarea class="u-in u-grow" id="fBrg" rows="1" data-oneline enterkeyhint="next" placeholder="Contoh: Blok Mio 1, Head 1"></textarea></label>
+<div class="u-fld"><span class="u-lb">Barang dari Warung <em id="wCnt"></em></span>
+<button class="u-bt u-sec u-full" type="button" id="bWarung"><svg class="u-ic"><use href="#i-store"/></svg>Pilih barang Warung</button>
+<div class="u-grp wsel" id="wSel" hidden></div>
+</div>
+<label class="u-fld"><span>Harga <em>barang + jasa</em></span><div class="u-inw"><span class="u-pre">Rp</span><input class="u-in" id="fHarga" type="text" placeholder="0" enterkeyhint="done"></div></label>
+<div class="u-split" id="split" hidden></div>
+<div id="hargaMsg"></div>
+<div class="u-fld"><span class="u-lb">Metode bayar</span><div class="u-seg" id="metSeg"><button data-v="cash">Cash</button><button data-v="transfer">Transfer</button><button data-v="campur">Campur</button></div></div>
+<div class="camp" id="campBox" hidden>
+<label class="u-fld"><span>Cash</span><div class="u-inw"><span class="u-pre">Rp</span><input class="u-in" id="fCash" type="text" placeholder="0"></div></label>
+<label class="u-fld"><span>Transfer <em id="sisaTf"></em></span><div class="u-inw"><span class="u-pre">Rp</span><input class="u-in" id="fTf" type="text" placeholder="0" readonly></div></label>
+</div>
+<details class="u-more" id="more"><summary>Tambah rincian<svg class="u-ic"><use href="#i-down"/></svg></summary>
+<div class="u-mb">
+<label class="u-fld"><span>Barang keluar <em>dibawa customer</em></span><textarea class="u-in u-grow" rows="1" data-oneline placeholder="Tidak ada / B&amp;J / nama barang"></textarea></label>
+<label class="u-fld"><span>Barang ditinggal</span><textarea class="u-in u-grow" rows="1" data-oneline placeholder="Tidak ada / B&amp;J / nama barang"></textarea></label>
+<label class="u-fld"><span>Keterangan</span><textarea class="u-in u-grow" rows="2" placeholder="Opsional"></textarea></label>
+</div>
+</details>
+</main>
+<div class="u-bar"><div><div class="u-tot"><small>Total</small><b id="barTot">Rp0</b></div><button class="u-bt" type="button" id="bSave">Simpan</button></div></div>
+</section>
+
+<div class="u-sheet u-tall" id="shWarung" aria-labelledby="shWT">
+<div class="u-hdl"></div>
+<div class="u-shh"><b id="shWT">Barang Warung</b><button class="u-ib u-gh" type="button" data-u-close aria-label="Tutup"><svg class="u-ic"><use href="#i-x"/></svg></button></div>
+<div class="u-shb">
+<label class="u-srch" id="wSrch" style="position:sticky;top:0;z-index:2;padding-bottom:10px;background:var(--u-sf)"><svg class="u-ic" style="top:14px"><use href="#i-search"/></svg><input class="u-in" type="search" placeholder="Cari: mio, blade, 6202" enterkeyhint="search" aria-label="Cari barang"><button class="u-x" type="button" aria-label="Hapus"><svg class="u-ic"><use href="#i-x"/></svg></button></label>
+<div class="u-chips flat" id="osChips" style="margin:0 0 10px;padding:0"></div>
+<div class="u-grp wpick" id="wList"></div>
+</div>
+<div class="u-shf"><button class="u-bt" type="button" id="wDone">Selesai</button></div>
+</div>
+
+<nav class="u-nav" id="nav" aria-label="Menu utama">
+<u class="u-ngb"></u><u class="u-ngl"></u><i></i>
+<button type="button" class="on" data-v="vHome"><svg class="u-ic"><use href="#i-home"/></svg>Beranda</button>
+<button type="button" data-v="vCat"><svg class="u-ic"><use href="#i-book"/></svg>Catatan</button>
+<button type="button" data-v="vAna"><svg class="u-ic"><use href="#i-chart"/></svg>Analisa</button>
+<button type="button" data-v="vMore"><svg class="u-ic"><use href="#i-grid"/></svg>Lainnya</button>
+</nav>
+
+<script>
+(function(){
+var U=BMUI,$=function(i){return document.getElementById(i)};
+var PJ=['Amin','Mail','Yono','Kuswanto'];
+var NAMA=['Pak Joko','Rudi Motor','Bu Sari','Andi','Dedi Bengkel','Mas Eko','Hendra','Toko Jaya','Bayu','Wawan','Pak Slamet','Rizal'];
+var BRG=['Blok Mio 1, Piston 1','Head Vario 1','Kruk as Beat 1','Bore up Jupiter','Skir klep Supra','Blok RX-K 1','Ganti ring Blade','Korter Satria 1','Head Ninja 2','Bubut kruk Smash'];
+var ST=['lunas','belum','sebagian','lunas','lunas','belum'];
+var REC=[];
+(function(){var t=Date.now();for(var i=0;i<26;i++){var h=[85000,120000,170000,250000,350000,40000,600000,95000][i%8];var s=ST[i%6];REC.push({id:i,no:26-i,pj:PJ[i%4],cust:NAMA[i%12],brg:BRG[i%10],harga:h,st:s,sisa:s==='sebagian'?Math.round(h/2/1000)*1000:0,met:['cash','transfer','campur'][i%3],t:new Date(t-i*3.1*3600e3)})}})();
+var WARUNG=[];
+(function(){var m=[['Piston Mio',115000],['Piston Blade',130000],['Piston RX-K',145000],['Piston Vario 125',125000],['Piston Jupiter Z',120000]];var os=['STD','25','50','75','100'];m.forEach(function(x,a){os.forEach(function(o,b){WARUNG.push({id:a*10+b,nama:x[0]+(o==='STD'?' STD':' OS '+o),dasar:x[0],os:o,harga:x[1]+b*5000,stok:(a*7+b*3)%9})})});WARUNG.push({id:90,nama:'Bearing 6202',dasar:'Bearing',os:'',harga:28000,stok:24});WARUNG.push({id:91,nama:'Ring piston Mio STD',dasar:'Ring',os:'STD',harga:45000,stok:6})})();
+function jam(d){return d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}
+function tglS(d){return d.toLocaleDateString('id-ID',{day:'numeric',month:'short'})}
+var BADGE={lunas:'<span class="u-bd u-ok"><svg class="u-ic"><use href="#i-check"/></svg>LUNAS</span>',belum:'<span class="u-bd u-er"><svg class="u-ic"><use href="#i-alert"/></svg>BELUM</span>',sebagian:'<span class="u-bd u-wn"><svg class="u-ic"><use href="#i-half"/></svg>SEBAGIAN</span>'};
+function ini(n){return n.split(' ').map(function(x){return x[0]}).join('').slice(0,2).toUpperCase()}
+function paintRp(){[].forEach.call(document.querySelectorAll('[data-rp]'),function(e){e.textContent=U.rp(e.getAttribute('data-rp'))})}
+$('tgl').textContent=new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+paintRp();
+$('lastList').innerHTML=REC.slice(0,5).map(function(r){return '<button class="u-r" type="button" data-rec="'+r.id+'"><span class="u-av">'+ini(r.cust)+'</span><span class="u-rm"><b>'+U.esc(r.cust)+'</b><small>'+U.esc(r.brg)+' · '+jam(r.t)+'</small></span><span class="u-rt"><b class="u-rp">'+U.rp(r.harga)+'</b>'+BADGE[r.st]+'</span></button>'}).join('');
+
+var cur='vHome',views=['vHome','vCat','vAna','vMore'];
+function show(v){if(v===cur)return;$(cur).hidden=true;$(v).hidden=false;$(v).classList.remove('u-page');void $(v).offsetWidth;$(v).classList.add('u-page');cur=v;window.scrollTo(0,0);if(v==='vAna')paintAna(true);if(v==='vCat')paintCat(true)}
+var nav=U.nav('nav',function(i){show(views[i])});
+
+var F='all',Q='',VIEW='kartu';
+function match(r){if(F!=='all'&&r.st!==F)return false;if(!Q)return true;var h=(r.cust+' '+r.brg+' '+r.pj+' '+tglS(r.t)+' '+r.harga).toLowerCase();return Q.toLowerCase().split(/\s+/).every(function(w){return h.indexOf(w)>-1})}
+function counts(){['all','belum','sebagian','lunas'].forEach(function(k){var n=REC.filter(function(r){return k==='all'||r.st===k}).length;var e=document.querySelector('[data-c="'+k+'"]');if(e)e.textContent=n})}
+function paintCat(anim){counts();var L=REC.filter(match);$('cnt').textContent=L.length+' catatan';var box=$('catList');
+if(!L.length){box.innerHTML='<div class="u-grp"><div class="u-em"><span class="u-emi"><svg class="u-ic lg"><use href="#i-search"/></svg></span><b>Tidak ada hasil'+(Q?' untuk "'+U.esc(Q)+'"':'')+'</b><p>Coba kata lain atau ganti filter.</p><button class="u-bt u-sec u-sm" type="button" id="clrQ">Hapus pencarian</button></div></div>';$('clrQ').onclick=function(){srch.set('');F='all';setChip();paintCat()};return}
+if(VIEW==='tabel'){box.innerHTML='<div class="u-tbw"><table class="u-tb"><thead><tr><th>Customer</th><th>Tgl</th><th>PJ</th><th>Barang</th><th class="u-n">Harga</th><th>Status</th></tr></thead><tbody>'+L.map(function(r){return '<tr data-rec="'+r.id+'"><td><b>'+U.esc(r.cust)+'</b></td><td>'+tglS(r.t)+' '+jam(r.t)+'</td><td>'+r.pj+'</td><td class="u-wr">'+U.esc(r.brg)+'</td><td class="u-n">'+U.rp(r.harga)+'</td><td>'+BADGE[r.st]+'</td></tr>'}).join('')+'</tbody></table></div>';return}
+var html='',last='';L.forEach(function(r){var d=r.t.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long'});if(d!==last){if(last)html+='</div>';var tot=L.filter(function(x){return x.t.toDateString()===r.t.toDateString()}).reduce(function(a,x){return a+x.harga},0);html+='<div class="u-dsep"><b>'+d+'</b><span class="u-num">'+U.rp(tot)+'</span></div><div class="lst">';last=d}
+html+='<div class="u-cd cdl" data-rec="'+r.id+'" role="button" tabindex="0"><div class="u-tp"><div style="min-width:0"><b>'+U.esc(r.cust)+'</b><div class="u-mt"><span>#'+r.no+'</span><span>'+jam(r.t)+'</span><span>PJ '+r.pj+'</span><span>'+r.met+'</span></div></div>'+BADGE[r.st]+'</div><p style="margin:8px 0 6px;color:var(--u-mu);font-size:14px">'+U.esc(r.brg)+'</p><b class="u-rp">'+U.rp(r.harga)+'</b>'+(r.sisa?' <small class="u-wn" style="color:var(--u-wn);font-weight:700">· sisa '+U.rp(r.sisa)+'</small>':'')+'</div>'});html+='</div>';box.innerHTML=html;if(anim)[].forEach.call(box.querySelectorAll('.lst'),function(x){U.stagger(x)})}
+var srch=U.search('srch',function(q){if(q===Q)return;Q=q;paintCat()});
+function setChip(){[].forEach.call($('fChips').children,function(c){c.classList.toggle('on',c.getAttribute('data-f')===F);c.setAttribute('aria-pressed',c.getAttribute('data-f')===F)})}
+$('fChips').addEventListener('click',function(e){var c=e.target.closest('.u-chip');if(!c)return;F=c.getAttribute('data-f');setChip();c.scrollIntoView({inline:'nearest',block:'nearest',behavior:U.reduce()?'auto':'smooth'});U.vib(5);paintCat(true)});
+U.seg('viewSeg',function(v){VIEW=v;paintCat(true)});
+document.addEventListener('click',function(e){var r=e.target.closest('[data-rec]');if(r){var x=REC[r.getAttribute('data-rec')];U.toast('Membuka #'+x.no+' '+x.cust);return}
+var g=e.target.closest('[data-go]');if(g){e.preventDefault();var v=g.getAttribute('data-go');if(v==='form')openForm();if(v==='cat')nav.set(1);return}
+var t=e.target.closest('[data-toast]');if(t){e.preventDefault();U.toast(t.getAttribute('data-toast')+' (uji coba)')}
+var th=e.target.closest('[data-theme-toggle]');if(th)setTheme(!document.documentElement.classList.contains('theme-light'))});
+var lastY=0;window.addEventListener('scroll',function(){if(cur!=='vCat')return;var y=scrollY;$('fab').classList.toggle('u-hide',y>lastY+4&&y>120);if(y<lastY-4)$('fab').classList.remove('u-hide');lastY=y},{passive:true});
+
+function setTheme(light){try{localStorage.setItem('bm-theme',light?'light':'dark')}catch(e){}document.documentElement.classList.toggle('theme-light',light);document.documentElement.setAttribute('data-theme',light?'light':'dark');$('swTheme').checked=light;var m=document.querySelector('meta[name=theme-color]');if(m)m.content=light?'#f4f4f2':'#0e0e0e'}
+$('swTheme').checked=document.documentElement.classList.contains('theme-light');
+$('swTheme').addEventListener('change',function(){setTheme(this.checked)});
+var mo=U.seg('moSeg',function(v){try{localStorage.setItem('bm_mo',v)}catch(e){}if(v==='auto')document.documentElement.removeAttribute('data-mo');else document.documentElement.setAttribute('data-mo',v);U.toast('Animasi: '+{on:'Hidup',auto:'Ikuti HP',off:'Mati'}[v],{type:'ok'})});
+mo.set(document.documentElement.getAttribute('data-mo')||'auto',true);
+$('bDel').onclick=function(){U.confirm({title:'Hapus data ini?',text:'Data #26 Pak Joko pindah ke Sampah. Masih bisa dipulihkan.',ok:'Hapus',danger:true}).then(function(y){if(y)U.toast('Data dipindah ke Sampah',{type:'ok',action:'Urungkan',onAction:function(){U.toast('Dikembalikan',{type:'ok'})}})})};
+$('bErr').onclick=function(){U.toast('Gagal menyimpan. Data aman di HP, dicoba lagi otomatis.',{type:'er',action:'Coba lagi',onAction:function(){U.toast('Tersimpan di server',{type:'ok'})}})};
+$('bSkl').onclick=function(){var b=$('sklBox');b.innerHTML='<div class="u-grp" aria-busy="true">'+[1,2,3].map(function(){return '<div class="u-r"><span class="u-skl" style="width:38px;height:38px;border-radius:50%" aria-hidden="true"></span><span class="u-rm"><span class="u-skl u-t" style="width:60%"></span><span class="u-skl u-t" style="width:35%"></span></span></div>'}).join('')+'</div>';setTimeout(function(){b.innerHTML='';U.toast('Data termuat',{type:'ok'})},1800)};
+$('bNot').onclick=function(){U.toast('5 data belum lengkap')};
+U.ptr(function(){return new Promise(function(r){setTimeout(function(){r();U.toast('Data diperbarui',{type:'ok'})},900)})});
+
+var HERO=[['Ringkasan','Pemasukan',1],['Kasbon','Keluar dari laci',.12],['Operasional','Belanja bengkel',.18],['Warung','Barang dari Warung',.22],['Bersih Cash','Uang laci',.41],['Bersih Transfer','Rekening',.21],['BERSIH TOTAL','Pemasukan - semua potongan',.48]];
+var PER={d:2350000,w:15800000,m:61200000,y:702000000};
+function seq(n,s){var a=[],v=50;for(var i=0;i<n;i++){v+=Math.sin(i*1.7+s)*14+(i%3-1)*6;a.push(Math.max(5,v))}return a}
+var hsel=0,P='d',heroApi;
+function paintAna(anim){var base=PER[P];$('hero').innerHTML=HERO.map(function(h,i){var v=Math.round(base*h[2]/1000)*1000;var up=(i*7+P.length)%3!==0;return '<div class="u-hc'+(i===0||i===6?' u-pri':'')+'"><small>'+h[0]+'</small><b class="u-big">'+U.rp(v)+'</b><span class="u-dl '+(up?'u-ok':'u-er')+'">'+(up?'▲ ':'▼ ')+(5+i*3)+'% </span><span class="u-mu" style="font-size:13px">'+h[1]+'</span><svg class="u-sp" id="sp'+i+'"></svg></div>'}).join('');
+HERO.forEach(function(h,i){U.spark('sp'+i,seq(P==='d'?12:P==='w'?7:P==='m'?30:12,i))});
+heroApi=U.hero('hero','dots',function(i){hsel=i;$('heroName').textContent=HERO[i][0];paintRinci()});
+$('bars').innerHTML=PJ.map(function(p,i){var v=Math.round(base*[.38,.27,.21,.14][i]/1000)*1000;return '<div><span>'+p+'</span><b class="u-rp">'+U.rp(v)+'</b><i><i style="width:'+[100,71,55,37][i]+'%"></i></i></div>'}).join('')}
+function paintRinci(){var base=PER[P];var rows=[['Cash masuk',.62],['Transfer masuk',.38],['Kasbon',-.12],['Operasional',-.18],['Warung',-.22]];$('rinci').innerHTML='<div class="u-grp" style="border:0;margin:-12px -14px">'+rows.map(function(r){var v=Math.round(base*r[1]/1000)*1000;return '<div class="u-r" style="min-height:48px"><span class="u-rm"><b style="font-weight:400">'+r[0]+'</b></span><span class="u-rt"><b class="u-rp '+(v<0?'u-er':'')+'">'+U.rp(v)+'</b></span></div>'}).join('')+'</div>'}
+U.seg('perSeg',function(v){P=v;var h=$('hero');h.innerHTML='<div class="u-hc"><span class="u-skl u-t" style="width:40%"></span><span class="u-skl" style="height:34px;width:70%;margin:10px 0"></span><span class="u-skl u-t" style="width:55%"></span></div><div class="u-hc"></div>';setTimeout(function(){paintAna(true);if(hsel)heroApi.show(hsel)},350)});
+$('bCal').onclick=function(){U.toast('Pilih hari (uji coba)')};
+
+var picked={},jasa=0,met=null,formLayer=null,prevView='vHome',dirty=false;
+var wShOS='Semua';
+var hargaIn=U.money('fHarga',function(v){var b=barangTot();if(!syncing){jasa=v-b;dirty=true}paintSplit()});
+var cashIn=U.money('fCash',function(){paintCamp()});
+var tfIn=U.money('fTf');
+var syncing=false;
+function barangTot(){return Object.keys(picked).reduce(function(a,k){var w=WARUNG.find(function(x){return x.id==k});return a+w.harga*picked[k]},0)}
+function paintSplit(){var b=barangTot(),h=hargaIn.get();$('barTot').textContent=U.rp(h);var sp=$('split');if(!b){sp.hidden=true;$('hargaMsg').innerHTML='';return}sp.hidden=false;sp.innerHTML='<span>Barang <b class="u-rp">'+U.rp(b)+'</b></span><span>Jasa <b class="u-rp">'+U.rp(Math.max(0,h-b))+'</b></span>';$('hargaMsg').innerHTML=h<b?'<p class="u-msg"><svg class="u-ic"><use href="#i-alert"/></svg>Harga kurang dari harga barang Warung</p>':'';$('fHarga').classList.toggle('u-bad',h<b);paintCamp()}
+function paintCamp(){if(met!=='campur')return;var s=hargaIn.get()-cashIn.get();tfIn.set(Math.max(0,s));$('sisaTf').textContent='otomatis'}
+function paintSel(){var ks=Object.keys(picked);var box=$('wSel');$('wCnt').textContent=ks.length?ks.reduce(function(a,k){return a+picked[k]},0)+' barang':'';$('bWarung').innerHTML='<svg class="u-ic"><use href="#i-'+(ks.length?'plus':'store')+'"/></svg>'+(ks.length?'Tambah / ubah barang':'Pilih barang Warung');if(!ks.length){box.hidden=true;box.innerHTML='';return}box.hidden=false;
+box.innerHTML=ks.map(function(k){var w=WARUNG.find(function(x){return x.id==k});return '<div class="u-r"><span class="u-rm"><b>'+U.esc(w.nama)+'</b><small class="u-rp">'+picked[k]+' × '+U.rp(w.harga)+'</small></span><span class="u-step" data-min="0" data-max="'+Math.max(w.stok,picked[k])+'" data-sel="'+k+'"><button aria-label="Kurangi"><svg class="u-ic"><use href="#i-minus"/></svg></button><input value="'+picked[k]+'" aria-label="Jumlah"><button aria-label="Tambah"><svg class="u-ic"><use href="#i-plus"/></svg></button></span></div>'}).join('');
+[].forEach.call(box.querySelectorAll('.u-step'),function(s){var k=s.getAttribute('data-sel');U.stepper(s,function(v){setPick(k,v,true)})})}
+function setPick(k,v,fromSel){var before=barangTot();if(v>0)picked[k]=v;else delete picked[k];var after=barangTot();syncing=true;hargaIn.set(after+Math.max(0,jasa));syncing=false;dirty=true;paintSplit();updDone();if(!fromSel||v===0)paintSel();else{$('wCnt').textContent=Object.keys(picked).reduce(function(a,x){return a+picked[x]},0)+' barang';var sm=document.querySelector('[data-sel="'+k+'"]');if(sm){var w=WARUNG.find(function(x){return x.id==k});sm.parentNode.querySelector('small').textContent=v+' × '+U.rp(w.harga)}}}
+function paintW(q){q=(q||'').toLowerCase();var L=WARUNG.filter(function(w){return(!q||w.nama.toLowerCase().indexOf(q)>-1)&&(wShOS==='Semua'||w.os===wShOS)});
+$('wList').innerHTML=L.length?L.map(function(w){var n=picked[w.id]||0;return '<div class="u-r'+(w.stok?'':' u-dis')+'"><span class="u-rm"><b>'+U.esc(w.nama)+'</b><small><span class="u-rp">'+U.rp(w.harga)+'</span> · stok '+w.stok+'</small></span>'+(w.stok?'<span class="u-step" data-min="0" data-max="'+w.stok+'" data-w="'+w.id+'"><button aria-label="Kurangi"><svg class="u-ic"><use href="#i-minus"/></svg></button><input value="'+n+'" aria-label="Jumlah"><button aria-label="Tambah"><svg class="u-ic"><use href="#i-plus"/></svg></button></span>':'<span class="u-bd">Habis</span>')+'</div>'}).join(''):'<div class="u-em"><b>Tidak ditemukan</b><p>Coba ketik nama motor atau ukuran.</p></div>';
+[].forEach.call($('wList').querySelectorAll('.u-step'),function(s){U.stepper(s,function(v){setPick(s.getAttribute('data-w'),v)})});updDone()}
+function updDone(){var n=Object.keys(picked).reduce(function(a,k){return a+picked[k]},0);$('wDone').textContent=n?'Selesai · '+n+' barang · '+U.rp(barangTot()):'Selesai'}
+var osL=['Semua','STD','25','50','75','100'];$('osChips').innerHTML=osL.map(function(o){return '<button class="u-chip'+(o==='Semua'?' on':'')+'" type="button" data-os="'+o+'">'+(o==='Semua'||o==='STD'?o:'OS '+o)+'</button>'}).join('');
+$('osChips').addEventListener('click',function(e){var c=e.target.closest('[data-os]');if(!c)return;wShOS=c.getAttribute('data-os');[].forEach.call(this.children,function(x){x.classList.toggle('on',x===c)});paintW(wQ)});
+var wQ='';var wS=U.search('wSrch',function(q){wQ=q;paintW(q)});
+var sh=U.sheet('shWarung',{onOpen:function(){paintW(wQ)},onClose:function(){paintSel()}});
+$('bWarung').onclick=function(){sh.open()};
+$('wDone').onclick=function(){sh.close()};
+var ms=U.seg('metSeg',function(v){met=v;dirty=true;$('campBox').hidden=v!=='campur';paintCamp()});
+[].forEach.call(document.querySelectorAll('textarea.u-grow'),function(t){U.grow(t)});
+U.topbar('formTop');
+$('fCust').addEventListener('blur',function(){chkCust()});
+$('fCust').addEventListener('input',function(){dirty=true;if($('custMsg').innerHTML)chkCust()});
+function chkCust(){var ok=!!$('fCust').value.trim();$('fCust').classList.toggle('u-bad',!ok);$('fCust').setAttribute('aria-invalid',!ok);$('custMsg').innerHTML=ok?'':'<p class="u-msg"><svg class="u-ic"><use href="#i-alert"/></svg>Nama customer wajib diisi</p>';return ok}
+function resetForm(){picked={};jasa=0;met=null;dirty=false;$('fCust').value='';$('fPj').value='';$('fBrg').value='';hargaIn.set('');cashIn.set('');ms.set(null,true);$('campBox').hidden=true;$('more').open=false;$('custMsg').innerHTML='';$('fCust').classList.remove('u-bad');[].forEach.call(document.querySelectorAll('#vForm textarea'),function(t){t.value='';t.dispatchEvent(new Event('input'))});paintSel();paintSplit()}
+function openForm(){prevView=cur;$(cur).hidden=true;$('nav').hidden=true;$('vForm').hidden=false;$('vForm').classList.remove('u-page');void $('vForm').offsetWidth;$('vForm').classList.add('u-page');document.body.classList.add('u-hasbar-page');window.scrollTo(0,0);resetForm();formLayer=U.layer.push(function(){closeForm(true)})}
+function closeForm(fromBack){if(dirty&&fromBack){formLayer=U.layer.push(function(){closeForm(true)});U.confirm({title:'Perubahan belum disimpan',text:'Keluar tanpa menyimpan?',ok:'Keluar',cancel:'Tetap di sini',danger:true}).then(function(y){if(y){dirty=false;hideForm()}});return}hideForm(fromBack)}
+function hideForm(fromBack){$('vForm').hidden=true;$('nav').hidden=false;$(prevView).hidden=false;cur=prevView;document.body.classList.remove('u-hasbar-page');if(!fromBack&&formLayer)U.layer.drop(formLayer);formLayer=null;window.scrollTo(0,0)}
+$('fBack').onclick=function(){if(dirty){U.confirm({title:'Perubahan belum disimpan',text:'Keluar tanpa menyimpan?',ok:'Keluar',cancel:'Tetap di sini',danger:true}).then(function(y){if(y){dirty=false;hideForm()}})}else hideForm()};
+$('bSave').onclick=function(){if(!chkCust()){$('fCust').focus();$('fCust').scrollIntoView({block:'center'});U.toast('Lengkapi dulu nama customer',{type:'er'});return}if(hargaIn.get()<barangTot()){$('fHarga').focus();U.toast('Harga kurang dari harga barang',{type:'er'});return}
+var b=this;b.classList.add('u-busy');setTimeout(function(){b.classList.remove('u-busy');var nm=$('fCust').value.trim();REC.unshift({id:REC.length,no:REC.length+1,pj:$('fPj').value||'-',cust:nm,brg:$('fBrg').value||'-',harga:hargaIn.get(),st:'belum',sisa:0,met:met||'-',t:new Date()});dirty=false;hideForm();U.toast('Tersimpan: '+nm,{type:'ok',action:'Urungkan',onAction:function(){REC.shift();if(cur==='vCat')paintCat();U.toast('Dibatalkan')}});if(cur==='vCat')paintCat(true)},700)};
+})();
+</script>
+</body>
+</html>
