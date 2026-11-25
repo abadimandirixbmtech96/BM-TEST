@@ -3546,7 +3546,7 @@
 
     if (!session && !timedOut) {
       try { localStorage.removeItem(OK_KEY); } catch (e) {}
-      window.location.href = 'admin-login.html';
+      window.location.href = 'dashboard-admin.html';
       return;
     }
 
@@ -3567,7 +3567,7 @@
     } else if (!isAdmin) {
       try { localStorage.removeItem(OK_KEY); } catch (e) {}
       await supabaseClient.auth.signOut();
-      window.location.href = 'admin-login.html';
+      window.location.href = 'dashboard-admin.html';
       return;
     } else {
       try { localStorage.setItem(OK_KEY, session.user.id); } catch (e) {}

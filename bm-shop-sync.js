@@ -302,7 +302,7 @@
         + '<button type="button" class="no">Nanti saja</button></form>';
       document.body.appendChild(loginEl);
       var f = loginEl.querySelector('form');
-      f.addEventListener('submit', function (ev) { ev.preventDefault(); (window.top || window).location.href = '/admin-login.html'; });
+      f.addEventListener('submit', function (ev) { ev.preventDefault(); (window.top || window).location.href = '/dashboard-admin.html'; });
       loginEl.querySelector('.no').addEventListener('click', hideLogin);
       loginEl.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') hideLogin(); });
     }

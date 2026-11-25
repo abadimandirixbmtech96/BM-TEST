@@ -521,7 +521,7 @@
     const { data: { session } } = await supabaseClient.auth.getSession();
 
     if (!session) {
-      window.top.location.href = 'admin-login.html';
+      window.top.location.href = 'dashboard-admin.html';
       return;
     }
 
@@ -534,7 +534,7 @@
 
     if (!isAdmin) {
       await supabaseClient.auth.signOut();
-      window.top.location.href = 'admin-login.html';
+      window.top.location.href = 'dashboard-admin.html';
     }
   })();
 </script>

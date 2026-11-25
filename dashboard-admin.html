@@ -2949,7 +2949,53 @@ html body .nf-tab.active{background:var(--u-ac)!important;color:var(--u-on)!impo
 html body .auth-guard-screen{background:var(--u-bg)!important;color:var(--u-mu)!important}
 html body .skeleton-card{background:var(--u-sf)!important;border:1px solid var(--u-bd)!important;border-radius:var(--u-r3)!important}
 html body .settings-group:not(:has(*)){display:none}
-html body .note-meta-row .st-pill{white-space:normal;line-height:1.3;text-align:left}</style>
+html body .note-meta-row .st-pill{white-space:normal;line-height:1.3;text-align:left}
+html body .header .segmented-tabs{display:none!important}
+html body .header{justify-content:space-between!important;padding:calc(var(--safe-top) + 10px) 16px 0!important;min-height:0!important}
+html body .header::before{background:linear-gradient(180deg,rgba(var(--hdr-rgb),.96) 0%,rgba(var(--hdr-rgb),.7) 70%,rgba(var(--hdr-rgb),0) 100%)!important}
+html body #btnToggleViewMenu,html body #btnTasksFilter{margin-left:auto}
+html body .content-scroll{padding:calc(var(--safe-top) + 62px) 16px calc(var(--safe-bottom) + 176px)!important}
+html body .page-title{font-size:32px!important;font-weight:700!important;letter-spacing:-.025em!important;line-height:1.1;margin:10px 0 4px!important;text-transform:none!important}
+html body .u-sub{font-size:var(--u-f2);color:var(--u-mu);font-weight:600;margin:0 0 14px;min-height:18px}
+html body .u-sub:empty{min-height:0;margin:0 0 6px}
+html body .u-ssrch{width:100%;height:48px;display:flex;align-items:center;gap:10px;padding:0 16px;border:1px solid var(--u-bd);border-radius:16px;background:var(--u-sf);color:var(--u-mu);font-size:var(--u-f3);font-weight:600;text-align:left;cursor:pointer;transition:transform .25s var(--u-spring)}
+html body .u-ssrch svg{width:19px;height:19px;flex:none}
+html body .u-ssrch:active{transform:scale(.985)}
+html body .u-chips{display:flex;gap:8px;overflow-x:auto;margin:12px -16px 2px;padding:2px 16px 6px;scrollbar-width:none;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+html body .u-chips::-webkit-scrollbar{display:none}
+html body .u-chip{flex:none;height:38px;display:inline-flex;align-items:center;gap:7px;padding:0 14px;border-radius:999px;border:1px solid var(--u-bd);background:var(--u-sf);color:var(--u-mu);font-size:var(--u-f2);font-weight:700;cursor:pointer;white-space:nowrap;transition:background .25s,color .25s,transform .3s var(--u-spring)}
+html body .u-chip i{width:8px;height:8px;border-radius:50%;flex:none}
+html body .u-chip em{font-style:normal;font-size:11px;font-weight:700;opacity:.7}
+html body .u-chip:active{transform:scale(.93)}
+html body .u-chip.on{background:var(--u-ac);border-color:var(--u-ac);color:var(--u-on)}
+html body .u-chip.on em{opacity:.8}
+
+html body .bottom-bar{left:auto!important;right:16px!important;bottom:calc(var(--safe-bottom) + 92px)!important;width:auto!important;background:none!important;border:0!important;box-shadow:none!important;pointer-events:none;z-index:44}
+html body .bottom-bar .search-pill{display:none!important}
+html body .btn-compose-pencil{pointer-events:auto;width:auto!important;min-width:0!important;height:52px!important;padding:0 20px 0 16px!important;border-radius:26px!important;gap:6px;flex-direction:row!important;align-items:center;box-shadow:var(--u-sh2)!important;transition:transform .45s var(--u-spring),opacity .25s!important}
+html body .btn-compose-pencil svg{display:none!important}
+html body .btn-compose-pencil::before{display:block!important;position:static!important;inset:auto!important;width:auto!important;height:auto!important;background:none!important;border:0!important;opacity:1!important;transform:none!important;content:"+";font-size:26px;font-weight:500;line-height:1;margin-top:-2px}
+html body .btn-compose-pencil::after{content:"Data";font-size:var(--u-f3);font-weight:700}
+html body.u-down .btn-compose-pencil{transform:translateY(24px) scale(.8)!important;opacity:0;pointer-events:none}
+html body.u-sel .u-nav{transform:translateY(130px);opacity:0;pointer-events:none}
+html body .u-nav{transition:transform .45s var(--u-spring),opacity .25s}
+
+html body .notes-container.view-list{gap:8px!important}
+html body .notes-container.view-list .week-group-header{margin:12px 2px 2px;font-size:var(--u-f2);font-weight:700;color:var(--u-mu);text-transform:none;letter-spacing:0}
+html body .notes-container.view-list .note-card{display:flex!important;flex-direction:column;gap:6px;padding:13px 14px!important;min-height:0!important}
+html body .notes-container.view-list .note-title{font-size:var(--u-f3)!important;font-weight:700;color:var(--u-tx)!important;line-height:1.25}
+html body .notes-container.view-list .note-desc:empty{display:none}
+html body .notes-container.view-list .note-date-tag{display:none!important}
+html body .notes-container.view-list .note-meta-row:not(:has(:not(.note-date-tag))){display:none}
+html body .notes-container.view-list .note-meta-row{margin-top:0}
+html body .u-sum{display:flex;align-items:baseline;gap:10px;margin-top:5px;font-size:var(--u-f2);color:var(--u-mu)}
+html body .u-sum b{font-weight:600}
+html body .u-sum span{margin-left:auto;font-size:var(--u-f4);font-weight:700;color:var(--u-tx);letter-spacing:-.01em}
+html body .notes-container.view-grid .u-sum,html body .notes-container.view-card .u-sum{flex-wrap:wrap;gap:2px 8px;color:inherit}
+html body .notes-container.view-grid .u-sum span,html body .notes-container.view-card .u-sum span{margin-left:0;font-size:var(--u-f3);color:inherit}
+html body .u-nav>.u-ngb{background:color-mix(in srgb,var(--u-sf) 95%,transparent)!important}
+html body.u-tasks .btn-compose-pencil{display:none!important}</style>
+<style>#btnOpenCustomers,#btnOpenKaryawan{display:none!important}</style>
 </head>
 <body>
 
@@ -3000,7 +3046,7 @@ html body .note-meta-row .st-pill{white-space:normal;line-height:1.3;text-align:
   </header>
 
   <div class="view-popup" id="viewPopup">
-    <button class="view-option" data-view="view-list">
+    <button class="view-option active" data-view="view-list">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="8" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="4" cy="18" r="1.5"/></svg>
       List View
     </button>
@@ -3008,7 +3054,7 @@ html body .note-meta-row .st-pill{white-space:normal;line-height:1.3;text-align:
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="6" rx="2"/><rect x="3" y="13" width="18" height="6" rx="2"/></svg>
       Card View
     </button>
-    <button class="view-option active" data-view="view-grid">
+    <button class="view-option" data-view="view-grid">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
       Grid View
     </button>
@@ -3017,8 +3063,11 @@ html body .note-meta-row .st-pill{white-space:normal;line-height:1.3;text-align:
   <main class="content-scroll">
     <div id="notesSection">
       <h1 class="page-title" id="currentCategoryTitle">ALL</h1>
+      <p class="u-sub" id="uSub"></p>
+      <button class="u-ssrch" id="uSearch" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7.5"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Cari catatan, nama, barang</span></button>
+      <div class="u-chips" id="uChips"></div>
 
-      <div class="notes-container view-grid" id="notesList"></div>
+      <div class="notes-container view-list" id="notesList"></div>
     </div>
 
     <div class="tasks-container" id="tasksSection">
@@ -3060,6 +3109,14 @@ html body .note-meta-row .st-pill{white-space:normal;line-height:1.3;text-align:
       Hapus
     </button>
   </div>
+
+  <nav class="u-nav" id="uNav" style="--u-n:4" aria-label="Menu utama">
+    <u class="u-ngb"></u><u class="u-ngl"></u><i id="uNavPill"></i>
+    <button type="button" class="u-nav-i on" data-go="notes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>Catatan</span></button>
+    <button type="button" class="u-nav-i" data-go="tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><polyline points="8 12.5 11 15.5 16 9"/></svg><span>Tugas</span></button>
+    <button type="button" class="u-nav-i" data-go="analisa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg><span>Analisa</span></button>
+    <button type="button" class="u-nav-i" data-go="more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg><span>Lainnya</span></button>
+  </nav>
 
 </div>
 
@@ -3590,7 +3647,7 @@ html body .note-meta-row .st-pill{white-space:normal;line-height:1.3;text-align:
           sessionStorage.setItem('bm-pending-link', JSON.stringify({ s: window.location.search, t: Date.now() }));
         }
       } catch (e) {}
-      (window.top || window).location.href = 'admin-login.html';
+      (window.top || window).location.href = 'dashboard-admin.html';
       return;
     }
 
@@ -3616,7 +3673,7 @@ html body .note-meta-row .st-pill{white-space:normal;line-height:1.3;text-align:
     if (!isAdmin) {
       try { localStorage.removeItem(OK_KEY); } catch (e) {}
       await supabaseClient.auth.signOut();
-      (window.top || window).location.href = 'admin-login.html';
+      (window.top || window).location.href = 'dashboard-admin.html';
       return;
     }
 
@@ -4764,6 +4821,24 @@ html body .note-meta-row .st-pill{white-space:normal;line-height:1.3;text-align:
         : `<span class="st-pill st-lunas" style="max-width:100%;box-sizing:border-box;">Semua lunas</span>`;
     } catch (e) { return ''; }
   }
+  function sumNominal(v) {
+    if (typeof v === 'number') return v > 0 ? v : 0;
+    const t = String(v == null ? '' : v).trim();
+    if (!t || !/^(rp\.?\s*)?\d[\d.,\s]*$/i.test(t)) return 0;
+    return Number(t.replace(/\D/g, '')) || 0;
+  }
+  function noteSumHtml(note) {
+    try {
+      const c = note && note.content;
+      const recs = c && Array.isArray(c.records) ? c.records : null;
+      if (!recs || !recs.length) return '';
+      let tot = 0;
+      if (isHutangNote(note) || isKasbonNote(note)) recs.forEach(r => { tot += Number(r.total) || 0; });
+      else if (isWarungNote(note)) recs.forEach(r => { tot += sumNominal(r.nominal); });
+      else recs.forEach(r => { tot += sumNominal(r.harga); });
+      return `<div class="u-sum"><b>${recs.length} data</b>${tot > 0 ? `<span>Rp ${escapeHtml(moneyRp(tot))}</span>` : ''}</div>`;
+    } catch (e) { return ''; }
+  }
   function noteCardHtml(note, idx) {
     return `
       <div class="note-card ${note.is_glass ? 'liquid-glass' : ''} ${note.pinned ? 'pinned' : ''}" data-id="${escapeHtml(note.id)}" ${note._merged ? 'data-merged="1"' : ''} style="animation-delay: ${idx * 0.05}s">
@@ -4775,6 +4850,7 @@ html body .note-meta-row .st-pill{white-space:normal;line-height:1.3;text-align:
         <div class="note-content-layer">
           <h2 class="note-title">${escapeHtml(note.title || 'Untitled')}</h2>
           <p class="note-desc">${escapeHtml(note.preview || '')}</p>
+          ${noteSumHtml(note)}
         </div>
         <div class="note-meta-row">
           <span class="note-date-tag">${formatNoteTimestamp(note.created_at)}</span>
@@ -9568,6 +9644,138 @@ html body .note-meta-row .st-pill{white-space:normal;line-height:1.3;text-align:
   }
   nav.addEventListener('pointerup', end);
   nav.addEventListener('pointercancel', end);
+})();
+</script>
+<script>
+(function () {
+  var $ = function (i) { return document.getElementById(i); };
+  var chips = $('uChips'), sub = $('uSub'), nav = $('uNav'), pill = $('uNavPill');
+  var title = $('currentCategoryTitle'), list = $('notesList');
+  var scroller = document.querySelector('.content-scroll');
+  var tabNotes = $('tabNotes'), tabTasks = $('tabTasks');
+  if (!chips || !nav || !title || !list) return;
+
+  function lbl(c) { var k = normalizeKey(c.name); return BOOK_LABELS[k] || c.name; }
+  function clr(c) { var k = normalizeKey(c.name); return BOOK_COLORS[k] || c.color || '#D9A536'; }
+
+  function buildChips() {
+    var cats = (typeof categoriesData !== 'undefined' ? categoriesData : []).filter(function (c) { return !c.ownerUsername; });
+    var total = cats.reduce(function (a, c) { return a + (c.count || 0); }, 0);
+    var h = '<button type="button" class="u-chip' + (activeCategoryId === '__all__' ? ' on' : '') + '" data-id="__all__">Semua<em>' + total + '</em></button>';
+    cats.forEach(function (c) {
+      h += '<button type="button" class="u-chip' + (activeCategoryId === c.id ? ' on' : '') + '" data-id="' + escapeHtml(c.id) + '"><i style="background:' + clr(c) + '"></i>' + escapeHtml(lbl(c)) + '<em>' + (c.count || 0) + '</em></button>';
+    });
+    if (chips.innerHTML === h) return;
+    chips.innerHTML = h;
+    var on = chips.querySelector('.on');
+    if (on) {
+      var l = on.offsetLeft - 16, r = on.offsetLeft + on.offsetWidth + 16;
+      if (l < chips.scrollLeft) chips.scrollLeft = Math.max(0, l);
+      else if (r > chips.scrollLeft + chips.clientWidth) chips.scrollLeft = r - chips.clientWidth;
+    }
+  }
+
+  function buildSub() {
+    var n = (typeof notesData !== 'undefined' && notesData) ? notesData.length : 0;
+    var t = n ? n + ' catatan' : '';
+    if (n && activeFilterYear && activeFilterMonth) t += ' · ' + MONTH_NAMES_ID[activeFilterMonth - 1] + ' ' + activeFilterYear;
+    if (sub.textContent !== t) sub.textContent = t;
+  }
+
+  function fixTitle() {
+    if (title.textContent === 'ALL') title.textContent = 'Semua';
+  }
+
+  chips.addEventListener('click', function (e) {
+    var b = e.target.closest('.u-chip');
+    if (!b) return;
+    var id = b.dataset.id;
+    if (typeof vibrate === 'function') { try { vibrate(8); } catch (x) {} }
+    if (id === '__all__') {
+      var row = document.querySelector('#categoryFolderList .folder-item[data-cat-id="__all__"]');
+      if (row) row.click();
+      return;
+    }
+    expandedFolderId = null;
+    expandedYear = null;
+    selectCategory(id);
+  });
+
+  $('uSearch').addEventListener('click', function () { $('btnSearchOpen').click(); });
+
+  function place() {
+    var items = [].slice.call(nav.querySelectorAll('.u-nav-i'));
+    var i = 0;
+    items.forEach(function (b, k) { if (b.classList.contains('on')) i = k; });
+    nav.style.setProperty('--u-i', i);
+  }
+  function setOn(key) {
+    [].forEach.call(nav.querySelectorAll('.u-nav-i'), function (b) { b.classList.toggle('on', b.dataset.go === key); });
+    place();
+  }
+  function syncTabs() {
+    var t = tabTasks.classList.contains('active');
+    document.body.classList.toggle('u-tasks', t);
+    setOn(t ? 'tasks' : 'notes');
+  }
+
+  nav.addEventListener('click', function (e) {
+    var b = e.target.closest('.u-nav-i');
+    if (!b) return;
+    var go = b.dataset.go;
+    if (go === 'notes') {
+      if (scroller) scroller.scrollTo({ top: 0, behavior: 'smooth' });
+      tabNotes.click();
+    } else if (go === 'tasks') {
+      tabTasks.click();
+    } else if (go === 'analisa') {
+      $('btnAnalyticsOpen').click();
+    } else if (go === 'more') {
+      $('btnOpenSettings').click();
+    }
+  });
+
+  var mo = new MutationObserver(syncTabs);
+  mo.observe(tabNotes, { attributes: true, attributeFilter: ['class'] });
+  mo.observe(tabTasks, { attributes: true, attributeFilter: ['class'] });
+
+  new MutationObserver(function () { buildChips(); buildSub(); })
+    .observe(list, { childList: true });
+  new MutationObserver(buildChips)
+    .observe($('categoryFolderList'), { childList: true });
+  new MutationObserver(fixTitle)
+    .observe(title, { childList: true, characterData: true, subtree: true });
+  new MutationObserver(function () {
+    document.body.classList.toggle('u-sel', list.classList.contains('selection-mode'));
+  }).observe(list, { attributes: true, attributeFilter: ['class'] });
+
+  var grp = document.querySelector('#settingsScreen .settings-group');
+  if (grp && $('btnProfile')) {
+    var row = document.createElement('div');
+    row.className = 'settings-item';
+    row.id = 'uRowProfile';
+    row.innerHTML = '<span class="settings-item-title">Profil</span><div class="settings-item-right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>';
+    row.addEventListener('click', function () { $('btnProfile').click(); });
+    grp.insertBefore(row, grp.firstChild);
+  }
+
+  if (scroller) {
+    var lastY = 0;
+    scroller.addEventListener('scroll', function () {
+      var y = scroller.scrollTop;
+      if (y > lastY + 6 && y > 80) document.body.classList.add('u-down');
+      else if (y < lastY - 6 || y < 40) document.body.classList.remove('u-down');
+      lastY = y;
+    }, { passive: true });
+  }
+
+  window.addEventListener('resize', place);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
+  fixTitle();
+  syncTabs();
+  buildChips();
+  buildSub();
+  setTimeout(place, 120);
 })();
 </script>
 <script src="/bm-swipe-back.js" defer></script>

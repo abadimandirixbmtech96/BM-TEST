@@ -436,6 +436,7 @@
 </style>
 <script src="/bm-theme.js"></script>
 <script src="/bm-lang.js"></script>
+<style>#p-keamanan,.tab-btn[data-tab="keamanan"]{display:none!important}</style>
 </head>
 <body>
 <script>
@@ -1054,7 +1055,7 @@ function bmMain(REAL){
     try { localStorage.removeItem('bm-profile-snap-v1'); } catch (e) {}
     try { if (window.BMSession) BMSession.stop(); } catch (e) {}
     try { localStorage.removeItem('bm-admin-ok'); } catch (e) {}
-    Promise.resolve().then(function(){ return REAL.c.auth.signOut(); }).catch(function(){}).then(function(){ location.replace('admin-login.html'); });
+    Promise.resolve().then(function(){ return REAL.c.auth.signOut(); }).catch(function(){}).then(function(){ location.replace('dashboard-admin.html'); });
   }
   function withTimeout(p, ms){ return Promise.race([p, new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('koneksi terlalu lama, coba lagi')); }, ms); })]); }
   /* Salinan tampilan Profil di HP: dibuka berikutnya langsung tampil tanpa "Memuat…", lalu diperbarui diam-diam */
@@ -1089,7 +1090,7 @@ function bmMain(REAL){
   $('bootRetry').addEventListener('click', function(){ bootShow('Memuat…', false); refresh(); });
   window.addEventListener('bm:refresh', function(e){ e.preventDefault(); if (!busy) refresh(); });
   $('bootBack').addEventListener('click', toLogin);
-  try { REAL.c.auth.onAuthStateChange(function(ev){ if (ev === 'SIGNED_OUT') location.replace('admin-login.html'); }); } catch (e) {}
+  try { REAL.c.auth.onAuthStateChange(function(ev){ if (ev === 'SIGNED_OUT') location.replace('dashboard-admin.html'); }); } catch (e) {}
   /* izin & role berubah di perangkat lain → tampilan Profil ikut menyesuaikan langsung (Realtime + cek ulang berkala) */
   (function(){
     var t = null, again = function(){ clearTimeout(t); t = setTimeout(function(){ if (loaded && !busy && !document.hidden) refresh(); }, 500); };
@@ -2188,7 +2189,7 @@ function bmMain(REAL){
   var boot = document.getElementById('boot'), box = document.getElementById('bootBox'), msg = document.getElementById('bootMsg');
   var btns = document.getElementById('bootBtns'), retry = document.getElementById('bootRetry'), back = document.getElementById('bootBack');
   function wt(p, ms){ return Promise.race([p, new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('timeout')); }, ms); })]); }
-  function toLoginPage(){ location.replace('admin-login.html'); }
+  function toLoginPage(){ location.replace('dashboard-admin.html'); }
   function fail(text){
     boot.hidden = false; box.classList.add('err'); msg.textContent = text; btns.hidden = false; retry.style.display = '';
     retry.onclick = function(){ location.reload(); };

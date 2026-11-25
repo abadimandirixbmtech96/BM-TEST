@@ -2170,7 +2170,7 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stro
       if (window.BMVoice) BMVoice.init({ token: token }); else loadVoice(function () {}, true);
       var r = await wt(supabaseClient.auth.getSession(), 8000); session = r.data && r.data.session;
     } catch (e) { return bootMsg('Koneksi lambat, belum bisa memeriksa sesi login.', 'Coba lagi', function () { location.reload(); }); }
-    if (!session) { (EMBED ? window.top : window).location.replace('/admin-login.html'); return; }
+    if (!session) { (EMBED ? window.top : window).location.replace('/dashboard-admin.html'); return; }
     try { var a = await wt(supabaseClient.rpc('is_admin'), 8000); if (a.error) throw a.error; isAdmin = a.data; } catch (e) { return bootMsg('Belum bisa memverifikasi akses admin. Periksa koneksi lalu coba lagi.', 'Coba lagi', function () { location.reload(); }); }
     if (isAdmin !== true) return bootMsg('Jarvis AI hanya untuk admin.', 'Kembali', exitPage);
     var u = session.user || {}, meta = u.user_metadata || {}; meUid = u.id || '';

@@ -159,7 +159,7 @@
         stop();
         try { await c.auth.signOut({ scope: 'local' }); } catch (e) {}
         try { localStorage.removeItem('bm-admin-ok'); } catch (e) {}
-        try { (window.top || window).location.replace('admin-login.html'); } catch (e) { location.replace('admin-login.html'); }
+        try { (window.top || window).location.replace('dashboard-admin.html'); } catch (e) { location.replace('dashboard-admin.html'); }
       }
     } catch (e) { /* jaringan putus: abaikan */ }
     checking = false;

@@ -106,10 +106,10 @@
 
   (async function guard() {
     const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session) { window.top.location.href = 'admin-login.html'; return; }
+    if (!session) { window.top.location.href = 'dashboard-admin.html'; return; }
     const { data: isAdmin, error } = await supabaseClient.rpc('is_admin');
     if (error) return;
-    if (!isAdmin) { await supabaseClient.auth.signOut(); window.top.location.href = 'admin-login.html'; }
+    if (!isAdmin) { await supabaseClient.auth.signOut(); window.top.location.href = 'dashboard-admin.html'; }
   })();
 
   const COLORS = ['#8B5CF6', '#D6409F', '#E2683C', '#0EA5A4', '#6366F1', '#E5546B', '#84A12B', '#A0643A'];

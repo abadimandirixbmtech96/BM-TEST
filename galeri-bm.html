@@ -454,10 +454,10 @@ var uid=localUid(),optimistic=!!uid&&uid===okUid,early=null;
 if(optimistic)early=loadData();
 try{
 var s=await wt(sb.auth.getSession(),8000);var session=s.data.session;
-if(!session){try{localStorage.removeItem(OK)}catch(e){}window.location.href='admin-login.html';return}
+if(!session){try{localStorage.removeItem(OK)}catch(e){}window.location.href='dashboard-admin.html';return}
 var a=await wt(sb.rpc('is_admin'),8000);
 if(a.error)throw a.error;
-if(!a.data){try{localStorage.removeItem(OK)}catch(e){}await sb.auth.signOut();window.location.href='admin-login.html';return}
+if(!a.data){try{localStorage.removeItem(OK)}catch(e){}await sb.auth.signOut();window.location.href='dashboard-admin.html';return}
 try{localStorage.setItem(OK,session.user.id)}catch(e){}
 }catch(err){
 console.error('Gagal cek akses admin:',err&&err.message?err.message:err);
